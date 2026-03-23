@@ -2,21 +2,19 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 
+import { saveMemberAction } from "@/app/actions/membros";
 import {
-  initialSaveMemberState,
-  saveMemberAction,
-} from "@/app/actions/membros";
-import { CategoriasTrajetoria } from "@/app/types/trajetoria";
+  CategoriasTrajetoriaEntries,
+  type PassoTrajetoria,
+  TotalPassosTrajetoria,
+} from "@/app/types/trajetoria";
 import { SubmitButton } from "@/components/membros/submit-button";
 import { TrajetoriaSection } from "@/components/membros/trajetoria-section";
-
-export type CelulaOption = {
-  id: string;
-  nome: string;
-  setor: string | null;
-  diaSemana: string | null;
-  horario: string | null;
-};
+import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
+import {
+  initialSaveMemberState,
+  type CelulaOption,
+} from "@/lib/mapeamento/types";
 
 type MemberFormProps = {
   celulas: CelulaOption[];
@@ -34,7 +32,7 @@ export function MemberForm({
   );
   const [nome, setNome] = useState("");
   const [celulaId, setCelulaId] = useState("");
-  const [selectedPassos, setSelectedPassos] = useState<string[]>([]);
+  const [selectedPassos, setSelectedPassos] = useState<PassoTrajetoria[]>([]);
   const formState = state ?? initialSaveMemberState;
   const fieldErrors = formState.fieldErrors ?? {};
   const formStatus = formState.status ?? "idle";
@@ -48,7 +46,7 @@ export function MemberForm({
     }
   }, [formStatus]);
 
-  function togglePasso(passo: string) {
+  function togglePasso(passo: PassoTrajetoria) {
     setSelectedPassos((current) =>
       current.includes(passo)
         ? current.filter((item) => item !== passo)
@@ -85,7 +83,7 @@ export function MemberForm({
         <label className="mt-5 block text-sm font-medium text-slate-700">
           Celula
           <select
-            name="celula_id"
+            name={MEMBER_FORM_FIELDS.celulaId}
             value={celulaId}
             onChange={(event) => setCelulaId(event.target.value)}
             disabled={isUnavailable || pending}
@@ -122,7 +120,7 @@ export function MemberForm({
           Nome do membro
           <input
             type="text"
-            name="nome"
+            name={MEMBER_FORM_FIELDS.nome}
             value={nome}
             onChange={(event) => setNome(event.target.value)}
             disabled={isUnavailable || pending}
@@ -153,7 +151,7 @@ export function MemberForm({
             </h2>
           </div>
           <span className="rounded-full bg-slate-900 px-3 py-1 text-sm font-medium text-white">
-            {selectedPassos.length} de 19
+            {selectedPassos.length} de {TotalPassosTrajetoria}
           </span>
         </div>
 
@@ -162,7 +160,7 @@ export function MemberForm({
           celular.
         </p>
 
-        {Object.entries(CategoriasTrajetoria).map(([categoria, passos]) => (
+        {CategoriasTrajetoriaEntries.map(([categoria, passos]) => (
           <TrajetoriaSection
             key={categoria}
             categoria={categoria}

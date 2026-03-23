@@ -1,8 +1,14 @@
+import type {
+  CategoriaTrajetoria,
+  PassoTrajetoria,
+} from "@/app/types/trajetoria";
+import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
+
 type TrajetoriaSectionProps = {
-  categoria: string;
-  passos: readonly string[];
-  selectedPassos: string[];
-  onTogglePasso: (passo: string) => void;
+  categoria: CategoriaTrajetoria;
+  passos: readonly PassoTrajetoria[];
+  selectedPassos: PassoTrajetoria[];
+  onTogglePasso: (passo: PassoTrajetoria) => void;
 };
 
 export function TrajetoriaSection({
@@ -46,7 +52,7 @@ export function TrajetoriaSection({
               >
                 <input
                   type="checkbox"
-                  name="passos_concluidos"
+                  name={MEMBER_FORM_FIELDS.passosConcluidos}
                   value={passo}
                   checked={checked}
                   onChange={() => onTogglePasso(passo)}

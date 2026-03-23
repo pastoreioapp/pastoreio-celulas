@@ -2,31 +2,56 @@ import "server-only";
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey =
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+type SupabaseServerConfig = {
+  url: string;
+  key: string;
+};
+
+function getSupabaseServerConfig(): {
+  config: SupabaseServerConfig | null;
+  error: string | null;
+} {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url) {
+    return {
+      config: null,
+      error: "Configure NEXT_PUBLIC_SUPABASE_URL para carregar as celulas.",
+    };
+  }
+
+  if (!key) {
+    return {
+      config: null,
+      error:
+        "Configure NEXT_PUBLIC_SUPABASE_ANON_KEY ou NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY para usar o Supabase.",
+    };
+  }
+
+  return {
+    config: {
+      url,
+      key,
+    },
+    error: null,
+  };
+}
 
 export function getSupabaseConfigError() {
-  if (!supabaseUrl) {
-    return "Configure NEXT_PUBLIC_SUPABASE_URL para carregar as células.";
-  }
-
-  if (!supabaseKey) {
-    return "Configure NEXT_PUBLIC_SUPABASE_ANON_KEY ou NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY para usar o Supabase.";
-  }
-
-  return null;
+  return getSupabaseServerConfig().error;
 }
 
 export function getSupabaseServerClient() {
-  const configError = getSupabaseConfigError();
+  const { config, error } = getSupabaseServerConfig();
 
-  if (configError) {
-    throw new Error(configError);
+  if (error || !config) {
+    throw new Error(error ?? "Configuracao do Supabase nao encontrada.");
   }
 
-  return createClient(supabaseUrl!, supabaseKey!, {
+  return createClient(config.url, config.key, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,

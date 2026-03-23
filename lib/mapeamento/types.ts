@@ -1,0 +1,38 @@
+import type { PassoTrajetoria } from "@/app/types/trajetoria";
+
+export type CelulaOption = {
+  id: string;
+  nome: string;
+  setor: string | null;
+  diaSemana: string | null;
+  horario: string | null;
+};
+
+export type LoadCelulasResult = {
+  celulas: CelulaOption[];
+  loadError: string | null;
+};
+
+export type SaveMemberFieldErrors = {
+  nome?: string;
+  celulaId?: string;
+  passos?: string;
+};
+
+export type SaveMemberState = {
+  status: "idle" | "success" | "error";
+  message: string | null;
+  fieldErrors: SaveMemberFieldErrors;
+};
+
+export const initialSaveMemberState: SaveMemberState = {
+  status: "idle",
+  message: null,
+  fieldErrors: {},
+};
+
+export type CreateMemberInput = {
+  nome: string;
+  celulaId: string;
+  passosConcluidos: PassoTrajetoria[];
+};

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { TodosPassosTrajetoria, type PassoTrajetoria } from "@/app/types/trajetoria";
+import { resolveCelulaAccess } from "@/lib/mapeamento/acesso";
 import { MAPEAMENTO_SCHEMA, MAPEAMENTO_TABLES, MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
 import {
   initialSaveMemberState,
@@ -55,10 +56,21 @@ function getSelectedPassos(formData: FormData) {
 export function validateCreateMemberFormData(
   formData: FormData
 ): ValidateMemberFormResult {
+  const codigoAcesso = readTrimmedString(
+    formData.get(MEMBER_FORM_FIELDS.codigoAcesso)
+  );
   const nome = readTrimmedString(formData.get(MEMBER_FORM_FIELDS.nome));
   const celulaId = readTrimmedString(formData.get(MEMBER_FORM_FIELDS.celulaId));
   const passosConcluidos = getSelectedPassos(formData);
   const fieldErrors: SaveMemberFieldErrors = {};
+  const resolvedAccess = resolveCelulaAccess(codigoAcesso);
+
+  if (!codigoAcesso) {
+    fieldErrors.codigoAcesso = "Informe o codigo de acesso da celula.";
+  } else if (!resolvedAccess) {
+    fieldErrors.codigoAcesso =
+      "Codigo de acesso invalido. Volte e informe um codigo valido.";
+  }
 
   if (!nome) {
     fieldErrors.nome = "Informe o nome do membro.";
@@ -70,6 +82,9 @@ export function validateCreateMemberFormData(
     fieldErrors.celulaId = "Selecione a celula que o membro frequenta.";
   } else if (!UUID_REGEX.test(celulaId)) {
     fieldErrors.celulaId = "A celula selecionada e invalida.";
+  } else if (resolvedAccess && resolvedAccess.celulaId !== celulaId) {
+    fieldErrors.celulaId =
+      "A celula enviada nao corresponde ao codigo de acesso informado.";
   }
 
   const possuiPassoInvalido = passosConcluidos.some(

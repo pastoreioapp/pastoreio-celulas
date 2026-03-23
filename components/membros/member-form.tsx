@@ -26,6 +26,7 @@ import {
 type MemberFormProps = {
   celulas: CelulaOption[];
   loadError?: string | null;
+  lockedAccessCode?: string;
 };
 
 type CelulaAvatarProps = {
@@ -82,14 +83,17 @@ function CelulaAvatar({ celula, className, imageSizes }: CelulaAvatarProps) {
 export function MemberForm({
   celulas,
   loadError = null,
+  lockedAccessCode,
 }: MemberFormProps) {
+  const lockedCelulaId = lockedAccessCode ? (celulas[0]?.id ?? "") : "";
+  const isLockedToSingleCelula = Boolean(lockedAccessCode);
   const selectorRef = useRef<HTMLDivElement>(null);
   const [state, formAction, pending] = useActionState(
     saveMemberAction,
     initialSaveMemberState
   );
   const [nome, setNome] = useState("");
-  const [celulaId, setCelulaId] = useState("");
+  const [celulaId, setCelulaId] = useState(lockedCelulaId);
   const [selectedPassos, setSelectedPassos] = useState<PassoTrajetoria[]>([]);
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const formState = state ?? initialSaveMemberState;
@@ -114,7 +118,13 @@ export function MemberForm({
     scheduleLabel || (selectedCelula ? "Horario a confirmar" : "Abra a lista para escolher");
 
   useEffect(() => {
-    if (!isSelectorOpen) {
+    if (isLockedToSingleCelula) {
+      setCelulaId(lockedCelulaId);
+    }
+  }, [isLockedToSingleCelula, lockedCelulaId]);
+
+  useEffect(() => {
+    if (!isSelectorOpen || isLockedToSingleCelula) {
       return undefined;
     }
 
@@ -137,7 +147,7 @@ export function MemberForm({
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isSelectorOpen]);
+  }, [isLockedToSingleCelula, isSelectorOpen]);
 
   function togglePasso(passo: PassoTrajetoria) {
     setSelectedPassos((current) =>
@@ -157,7 +167,7 @@ export function MemberForm({
       action={formAction}
       onReset={() => {
         setNome("");
-        setCelulaId("");
+        setCelulaId(lockedCelulaId);
         setSelectedPassos([]);
         setIsSelectorOpen(false);
       }}
@@ -167,113 +177,168 @@ export function MemberForm({
         <div className="relative" ref={selectorRef}>
           <input
             type="hidden"
+            name={MEMBER_FORM_FIELDS.codigoAcesso}
+            value={lockedAccessCode ?? ""}
+          />
+          <input
+            type="hidden"
             name={MEMBER_FORM_FIELDS.celulaId}
             value={celulaId}
           />
 
-          <button
-            type="button"
-            disabled={isUnavailable || pending}
-            aria-expanded={isSelectorOpen}
-            aria-haspopup="listbox"
-            aria-controls="celula-selector-options"
-            onClick={() => setIsSelectorOpen((current) => !current)}
-            className="relative w-full cursor-pointer overflow-hidden rounded-[22px] bg-white p-6 text-left transition disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-              <CelulaAvatar
-                celula={selectedCelula}
-                className="h-24 w-24 shrink-0"
-                imageSizes="96px"
-              />
+          {isLockedToSingleCelula ? (
+            <div className="overflow-hidden rounded-[22px] bg-white p-6">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <span className="inline-flex rounded-full bg-[#D8E2FF] px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[#17305E]">
+                  Celula liberada por codigo
+                </span>
+                <a
+                  href="/"
+                  className="text-sm font-bold text-[#3F5B93] underline underline-offset-4"
+                >
+                  Trocar codigo
+                </a>
+              </div>
 
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold uppercase tracking-widest text-[#3F5B93]">
-                  {contextEyebrow}
-                </p>
-                <h2 className="font-heading mt-1 text-[1.9rem] font-extrabold leading-tight tracking-[-0.04em] text-[#1A1C1F]">
-                  {contextTitle}
-                </h2>
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+                <CelulaAvatar
+                  celula={selectedCelula}
+                  className="h-24 w-24 shrink-0"
+                  imageSizes="96px"
+                />
 
-                <div className="mt-4 flex flex-wrap gap-2.5">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-[#444750]">
-                    <LeaderChipIcon className="h-3 w-3 shrink-0" alt="" />
-                    {contextPrimaryChip}
-                  </span>
-                  <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-[#444750]">
-                    <ScheduleChipIcon className="h-3.5 w-3 shrink-0" alt="" />
-                    {contextSecondaryChip}
-                  </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#3F5B93]">
+                    {contextEyebrow}
+                  </p>
+                  <h2 className="font-heading mt-1 text-[1.9rem] font-extrabold leading-tight tracking-[-0.04em] text-[#1A1C1F]">
+                    {contextTitle}
+                  </h2>
+
+                  <div className="mt-4 flex flex-wrap gap-2.5">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-[#444750]">
+                      <LeaderChipIcon className="h-3 w-3 shrink-0" alt="" />
+                      {contextPrimaryChip}
+                    </span>
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-[#444750]">
+                      <ScheduleChipIcon className="h-3.5 w-3 shrink-0" alt="" />
+                      {contextSecondaryChip}
+                    </span>
+                    <span className="inline-flex items-center rounded-full bg-[#EEF3FF] px-3 py-1.5 text-sm font-semibold text-[#17305E]">
+                      Codigo: {lockedAccessCode}
+                    </span>
+                  </div>
                 </div>
               </div>
-
-              <div className="shrink-0">
-                <ContextChevronIcon
-                  className="h-10 w-10"
-                  alt=""
-                />
-              </div>
             </div>
-          </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                disabled={isUnavailable || pending}
+                aria-expanded={isSelectorOpen}
+                aria-haspopup="listbox"
+                aria-controls="celula-selector-options"
+                onClick={() => setIsSelectorOpen((current) => !current)}
+                className="relative w-full cursor-pointer overflow-hidden rounded-[22px] bg-white p-6 text-left transition disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+                  <CelulaAvatar
+                    celula={selectedCelula}
+                    className="h-24 w-24 shrink-0"
+                    imageSizes="96px"
+                  />
 
-          {isSelectorOpen ? (
-            <div
-              id="celula-selector-options"
-              role="listbox"
-              aria-label="Lista de celulas disponiveis"
-              className="absolute inset-x-0 top-[calc(100%+12px)] z-30 rounded-[24px] border border-[#E3E8F3] bg-white p-3 shadow-[0_24px_48px_rgba(26,28,31,0.12)]"
-            >
-              <div className="max-h-112 space-y-2 overflow-y-auto pr-1">
-                {celulas.map((celula) => {
-                  const isSelected = celula.id === celulaId;
-                  const optionSchedule =
-                    getCelulaSchedule(celula) || "Horario a confirmar";
-                  const optionLeaders = celula.lideres
-                    ? `Lideres: ${celula.lideres}`
-                    : "Lideres nao informados";
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold uppercase tracking-widest text-[#3F5B93]">
+                      {contextEyebrow}
+                    </p>
+                    <h2 className="font-heading mt-1 text-[1.9rem] font-extrabold leading-tight tracking-[-0.04em] text-[#1A1C1F]">
+                      {contextTitle}
+                    </h2>
 
-                  return (
-                    <button
-                      key={celula.id}
-                      type="button"
-                      role="option"
-                      aria-selected={isSelected}
-                      onClick={() => handleSelectCelula(celula.id)}
-                      className={`w-full cursor-pointer rounded-[20px] border p-4 text-left transition ${
-                        isSelected
-                          ? "border-[#5974AD] bg-[#EEF3FF]"
-                          : "border-[#E7E8EE] bg-[#FBFBFE] hover:border-[#C8D3EA] hover:bg-white"
-                      }`}
-                    >
-                      <div className="flex items-start gap-4">
-                        <CelulaAvatar
-                          celula={celula}
-                          className="h-16 w-16 shrink-0"
-                          imageSizes="64px"
-                        />
+                    <div className="mt-4 flex flex-wrap gap-2.5">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-[#444750]">
+                        <LeaderChipIcon className="h-3 w-3 shrink-0" alt="" />
+                        {contextPrimaryChip}
+                      </span>
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-[#444750]">
+                        <ScheduleChipIcon className="h-3.5 w-3 shrink-0" alt="" />
+                        {contextSecondaryChip}
+                      </span>
+                    </div>
+                  </div>
 
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[11px] font-bold uppercase tracking-widest text-[#3F5B93]">
-                            {celula.setor ? `SETOR ${celula.setor}` : "CELULA"}
-                          </p>
-                          <p className="font-heading mt-1 text-lg font-extrabold tracking-[-0.03em] text-[#1A1C1F]">
-                            {celula.nome}
-                          </p>
-                        </div>
+                  <div className="shrink-0">
+                    <ContextChevronIcon
+                      className="h-10 w-10"
+                      alt=""
+                    />
+                  </div>
+                </div>
+              </button>
 
-                        <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#B8C5E0]">
-                          {isSelected ? (
-                            <span className="h-2.5 w-2.5 rounded-full bg-[#5974AD]" />
-                          ) : null}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ) : null}
+              {isSelectorOpen ? (
+                <div
+                  id="celula-selector-options"
+                  role="listbox"
+                  aria-label="Lista de celulas disponiveis"
+                  className="absolute inset-x-0 top-[calc(100%+12px)] z-30 rounded-[24px] border border-[#E3E8F3] bg-white p-3 shadow-[0_24px_48px_rgba(26,28,31,0.12)]"
+                >
+                  <div className="max-h-112 space-y-2 overflow-y-auto pr-1">
+                    {celulas.map((celula) => {
+                      const isSelected = celula.id === celulaId;
+
+                      return (
+                        <button
+                          key={celula.id}
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          onClick={() => handleSelectCelula(celula.id)}
+                          className={`w-full cursor-pointer rounded-[20px] border p-4 text-left transition ${
+                            isSelected
+                              ? "border-[#5974AD] bg-[#EEF3FF]"
+                              : "border-[#E7E8EE] bg-[#FBFBFE] hover:border-[#C8D3EA] hover:bg-white"
+                          }`}
+                        >
+                          <div className="flex items-start gap-4">
+                            <CelulaAvatar
+                              celula={celula}
+                              className="h-16 w-16 shrink-0"
+                              imageSizes="64px"
+                            />
+
+                            <div className="min-w-0 flex-1">
+                              <p className="text-[11px] font-bold uppercase tracking-widest text-[#3F5B93]">
+                                {celula.setor ? `SETOR ${celula.setor}` : "CELULA"}
+                              </p>
+                              <p className="font-heading mt-1 text-lg font-extrabold tracking-[-0.03em] text-[#1A1C1F]">
+                                {celula.nome}
+                              </p>
+                            </div>
+
+                            <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#B8C5E0]">
+                              {isSelected ? (
+                                <span className="h-2.5 w-2.5 rounded-full bg-[#5974AD]" />
+                              ) : null}
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </>
+          )}
         </div>
+
+        {fieldErrors.codigoAcesso ? (
+          <p className="mt-3 px-1 text-sm font-medium text-rose-100">
+            {fieldErrors.codigoAcesso}
+          </p>
+        ) : null}
 
         {fieldErrors.celulaId ? (
           <p className="mt-3 px-1 text-sm font-medium text-rose-100">
@@ -302,6 +367,11 @@ export function MemberForm({
             </span>
           </div>
         </label>
+        {fieldErrors.nome ? (
+          <p className="px-1 text-sm font-medium text-rose-700">
+            {fieldErrors.nome}
+          </p>
+        ) : null}
       </section>
 
       <section className="space-y-4">

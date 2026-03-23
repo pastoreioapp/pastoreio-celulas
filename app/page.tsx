@@ -1,9 +1,6 @@
 import { connection } from "next/server";
+import Image from "next/image";
 
-import {
-  TotalCategoriasTrajetoria,
-  TotalPassosTrajetoria,
-} from "@/app/types/trajetoria";
 import { MemberForm } from "@/components/membros/member-form";
 import { loadCelulaOptions } from "@/lib/mapeamento/celulas";
 
@@ -13,42 +10,23 @@ export default async function Home() {
   const { celulas, loadError } = await loadCelulaOptions();
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 py-6 sm:px-6 sm:py-8">
-      <section className="rounded-[2rem] bg-slate-950 px-6 py-7 text-white shadow-xl shadow-slate-950/20">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-300">
-          Mapeamento de membros
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-          Cadastro simples para acompanhar a trajetoria da celula.
-        </h1>
-        <p className="mt-3 max-w-xl text-base leading-7 text-slate-300">
-          Selecione a celula, informe o nome do membro e marque os passos
-          concluidos para salvar o registro com clareza e rapidez.
-        </p>
-
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl bg-white/10 px-4 py-3">
-            <p className="text-sm text-slate-300">Etapas</p>
-            <p className="mt-1 text-lg font-semibold">
-              {TotalCategoriasTrajetoria} blocos
-            </p>
-          </div>
-          <div className="rounded-2xl bg-white/10 px-4 py-3">
-            <p className="text-sm text-slate-300">Passos</p>
-            <p className="mt-1 text-lg font-semibold">
-              {TotalPassosTrajetoria} checkpoints
-            </p>
-          </div>
-          <div className="rounded-2xl bg-white/10 px-4 py-3">
-            <p className="text-sm text-slate-300">Celulas ativas</p>
-            <p className="mt-1 text-lg font-semibold">{celulas.length}</p>
-          </div>
+    <main className="min-h-screen bg-[#F9F9FD] text-[#1A1C1F]">
+      <header className="sticky top-0 z-30 border-b border-black/5 bg-[#F9F9FD]/80 backdrop-blur-2xl">
+        <div className="mx-auto flex max-w-[816px] items-center justify-center px-6 py-4">
+          <Image
+            src="/figma/pastoreio-logo.png"
+            alt="Pastore.io"
+            width={320}
+            height={70}
+            priority
+            className="h-11 w-auto sm:h-14"
+          />
         </div>
-      </section>
+      </header>
 
-      <section className="mt-6">
+      <div className="mx-auto w-full max-w-[816px] px-4 py-8 sm:px-6 sm:py-10">
         <MemberForm celulas={celulas} loadError={loadError} />
-      </section>
+      </div>
     </main>
   );
 }

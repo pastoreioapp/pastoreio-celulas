@@ -2,6 +2,8 @@
 
 import { useFormStatus } from "react-dom";
 
+import { SaveMemberIcon } from "@/components/membros/member-form-icons";
+
 type SubmitButtonProps = {
   disabled?: boolean;
 };
@@ -13,8 +15,9 @@ export function SubmitButton({ disabled = false }: SubmitButtonProps) {
     <button
       type="submit"
       disabled={disabled || pending}
-      className="flex min-h-14 w-full items-center justify-center rounded-2xl bg-slate-950 px-5 text-base font-semibold text-white shadow-lg shadow-slate-950/20 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+      className="flex min-h-15 w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-linear-to-b from-[#3F5B93] to-[#5974AD] px-5 text-sm font-bold uppercase tracking-widest text-white shadow-[0_-4px_24px_rgba(26,28,31,0.06)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
     >
+      <SaveMemberIcon className="h-5 w-5 shrink-0 text-white" />
       {pending ? "Salvando membro..." : "Salvar membro"}
     </button>
   );

@@ -1,15 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f9f9fd;
+  --foreground: #1a1c1f;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
 }
 
 html {
@@ -20,16 +19,20 @@ body {
   min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
 
+.font-heading {
+  font-family: var(--font-manrope), sans-serif;
+}
+
 ::selection {
-  background: #cbd5e1;
-  color: #020617;
+  background: #d8e2ff;
+  color: #001a42;
 }
 
 summary::-webkit-details-marker {

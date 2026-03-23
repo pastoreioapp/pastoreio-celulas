@@ -4,8 +4,10 @@ export type CelulaOption = {
   id: string;
   nome: string;
   setor: string | null;
+  lideres: string | null;
   diaSemana: string | null;
   horario: string | null;
+  fotoUrl: string | null;
 };
 
 export type LoadCelulasResult = {

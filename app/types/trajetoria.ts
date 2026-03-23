@@ -60,6 +60,16 @@ export const CategoriasTrajetoria = {
 
 export type CategoriaTrajetoria = keyof typeof CategoriasTrajetoria;
 
+export const CategoriaTrajetoriaDescriptions: Record<
+  CategoriaTrajetoria,
+  string
+> = {
+  "PASTOREIO 01": "Fundamentos da fé e integração",
+  "PASTOREIO 02": "Crescimento espiritual e maturidade",
+  DISCIPULADO: "Preparação para o envio",
+  "LÍDER DE CÉLULA": "Capacitação ministerial plena",
+};
+
 export const TodosPassosTrajetoria = Object.values(PassoTrajetoria);
 export const TotalCategoriasTrajetoria =
   Object.keys(CategoriasTrajetoria).length;

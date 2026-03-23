@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 
 import { saveMemberAction } from "@/app/actions/membros";
@@ -93,7 +94,7 @@ export function MemberForm({
     initialSaveMemberState
   );
   const [nome, setNome] = useState("");
-  const [celulaId, setCelulaId] = useState(lockedCelulaId);
+  const [selectedCelulaId, setSelectedCelulaId] = useState("");
   const [selectedPassos, setSelectedPassos] = useState<PassoTrajetoria[]>([]);
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const formState = state ?? initialSaveMemberState;
@@ -102,6 +103,7 @@ export function MemberForm({
   const formMessage = formState.message ?? null;
 
   const isUnavailable = Boolean(loadError) || celulas.length === 0;
+  const celulaId = isLockedToSingleCelula ? lockedCelulaId : selectedCelulaId;
   const selectedCelula = useMemo(
     () => celulas.find((celula) => celula.id === celulaId) ?? null,
     [celulaId, celulas]
@@ -116,12 +118,6 @@ export function MemberForm({
     : "Escolha uma celula para ver os lideres";
   const contextSecondaryChip =
     scheduleLabel || (selectedCelula ? "Horario a confirmar" : "Abra a lista para escolher");
-
-  useEffect(() => {
-    if (isLockedToSingleCelula) {
-      setCelulaId(lockedCelulaId);
-    }
-  }, [isLockedToSingleCelula, lockedCelulaId]);
 
   useEffect(() => {
     if (!isSelectorOpen || isLockedToSingleCelula) {
@@ -158,7 +154,7 @@ export function MemberForm({
   }
 
   function handleSelectCelula(nextCelulaId: string) {
-    setCelulaId(nextCelulaId);
+    setSelectedCelulaId(nextCelulaId);
     setIsSelectorOpen(false);
   }
 
@@ -167,7 +163,7 @@ export function MemberForm({
       action={formAction}
       onReset={() => {
         setNome("");
-        setCelulaId(lockedCelulaId);
+        setSelectedCelulaId("");
         setSelectedPassos([]);
         setIsSelectorOpen(false);
       }}
@@ -192,12 +188,12 @@ export function MemberForm({
                 <span className="inline-flex rounded-full bg-[#D8E2FF] px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[#17305E]">
                   Celula liberada por codigo
                 </span>
-                <a
+                <Link
                   href="/"
                   className="text-sm font-bold text-[#3F5B93] underline underline-offset-4"
                 >
                   Trocar codigo
-                </a>
+                </Link>
               </div>
 
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center">

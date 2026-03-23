@@ -21,6 +21,14 @@ export type CelulaAccessView = {
   celulaNome: string;
 };
 
+export type MemberListItem = {
+  id: string;
+  nome: string;
+  celulaId: string | null;
+  passosConcluidos: PassoTrajetoria[];
+  createdAt: string;
+};
+
 export type SaveMemberFieldErrors = {
   codigoAcesso?: string;
   nome?: string;

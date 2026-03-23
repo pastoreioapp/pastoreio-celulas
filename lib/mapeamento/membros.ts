@@ -6,6 +6,7 @@ import { MAPEAMENTO_SCHEMA, MAPEAMENTO_TABLES, MEMBER_FORM_FIELDS } from "@/lib/
 import {
   initialSaveMemberState,
   type CreateMemberInput,
+  type MemberListItem,
   type SaveMemberFieldErrors,
   type SaveMemberState,
 } from "@/lib/mapeamento/types";
@@ -26,6 +27,14 @@ type ValidateMemberFormResult =
 type PersistMemberResult =
   | { success: true }
   | { success: false; message: string };
+
+type MemberRow = {
+  id: string;
+  nome: string;
+  celula_id: string | null;
+  passos_concluidos: string[] | null;
+  created_at: string | null;
+};
 
 function createSaveMemberState(
   status: SaveMemberState["status"],
@@ -51,6 +60,20 @@ function getSelectedPassos(formData: FormData) {
     .map((value) => value.trim());
 
   return [...new Set(selected)];
+}
+
+function mapMemberRowToListItem(member: MemberRow): MemberListItem {
+  const passosConcluidos = (member.passos_concluidos ?? []).filter((passo): passo is PassoTrajetoria =>
+    PASSOS_VALIDOS.has(passo)
+  ) as PassoTrajetoria[];
+
+  return {
+    id: member.id,
+    nome: member.nome,
+    celulaId: member.celula_id,
+    passosConcluidos,
+    createdAt: member.created_at ?? new Date(0).toISOString(),
+  };
 }
 
 export function validateCreateMemberFormData(
@@ -152,6 +175,43 @@ export async function createMember(
     return {
       success: false,
       message: SAVE_MEMBER_ERROR_MESSAGE,
+    };
+  }
+}
+
+export async function loadMembersByCelulaId(
+  celulaId: string
+): Promise<{ members: MemberListItem[]; loadError: string | null }> {
+  const configError = getSupabaseConfigError();
+
+  if (configError) {
+    return {
+      members: [],
+      loadError: configError,
+    };
+  }
+
+  try {
+    const supabase = getSupabaseServerClient();
+    const { data, error } = await supabase
+      .schema(MAPEAMENTO_SCHEMA)
+      .from(MAPEAMENTO_TABLES.membros)
+      .select("id, nome, celula_id, passos_concluidos, created_at")
+      .eq("celula_id", celulaId)
+      .order("nome", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      members: ((data ?? []) as MemberRow[]).map(mapMemberRowToListItem),
+      loadError: null,
+    };
+  } catch {
+    return {
+      members: [],
+      loadError: SAVE_MEMBER_ERROR_MESSAGE,
     };
   }
 }

@@ -1,5 +1,7 @@
 import "server-only";
 
+import { appendFileSync } from "node:fs";
+
 import { TodosPassosTrajetoria, type PassoTrajetoria } from "@/app/types/trajetoria";
 import { resolveCelulaAccess } from "@/lib/mapeamento/acesso";
 import { MAPEAMENTO_SCHEMA, MAPEAMENTO_TABLES, MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
@@ -42,6 +44,26 @@ type MemberRow = {
   passos_concluidos: string[] | null;
   created_at: string | null;
 };
+
+function writeDebugLog(
+  hypothesisId: string,
+  location: string,
+  message: string,
+  data: Record<string, unknown>
+) {
+  try {
+    appendFileSync(
+      "/opt/cursor/logs/debug.log",
+      `${JSON.stringify({
+        hypothesisId,
+        location,
+        message,
+        data,
+        timestamp: Date.now(),
+      })}\n`
+    );
+  } catch {}
+}
 
 function createSaveMemberState(
   status: SaveMemberState["status"],
@@ -129,6 +151,17 @@ function validateMemberPayload(
       "Encontramos um passo invalido. Atualize a pagina e tente novamente.";
   }
 
+  // #region agent log
+  writeDebugLog("A", "lib/mapeamento/membros.ts:131", "Validated member form payload", {
+    codigoAcesso,
+    celulaId,
+    nomeLength: nome.length,
+    passosConcluidos,
+    passosCount: passosConcluidos.length,
+    fieldErrors,
+  });
+  // #endregion
+
   return {
     fieldErrors,
     payload: {
@@ -183,6 +216,21 @@ export function validateUpdateMemberFormData(
       ),
     };
   }
+
+  // #region agent log
+  writeDebugLog(
+    "A",
+    "lib/mapeamento/membros.ts:194",
+    "Validated update member form data",
+    {
+      memberId,
+      celulaId: payload.celulaId,
+      nomeLength: payload.nome.length,
+      passosConcluidos: payload.passosConcluidos,
+      passosCount: payload.passosConcluidos.length,
+    }
+  );
+  // #endregion
 
   return {
     success: true,
@@ -245,6 +293,16 @@ export async function updateMember(
   }
 
   try {
+    // #region agent log
+    writeDebugLog("B", "lib/mapeamento/membros.ts:266", "Updating member", {
+      memberId: input.id,
+      celulaId: input.celulaId,
+      nome: input.nome,
+      passosConcluidos: input.passosConcluidos,
+      passosCount: input.passosConcluidos.length,
+    });
+    // #endregion
+
     const supabase = getSupabaseServerClient();
     const { data, error } = await supabase
       .schema(MAPEAMENTO_SCHEMA)
@@ -256,7 +314,16 @@ export async function updateMember(
       })
       .eq("id", input.id)
       .eq("celula_id", input.celulaId)
-      .select("id");
+      .select("id, nome, celula_id, passos_concluidos");
+
+    // #region agent log
+    writeDebugLog("B", "lib/mapeamento/membros.ts:284", "Update member result", {
+      memberId: input.id,
+      hasError: Boolean(error),
+      updatedRows: data?.length ?? 0,
+      returnedRows: data,
+    });
+    // #endregion
 
     if (error || (data?.length ?? 0) !== 1) {
       return {
@@ -299,8 +366,22 @@ export async function loadMembersByCelulaId(
       throw error;
     }
 
+    const members = ((data ?? []) as MemberRow[]).map(mapMemberRowToListItem);
+
+    // #region agent log
+    writeDebugLog("C", "lib/mapeamento/membros.ts:372", "Loaded members for leader page", {
+      celulaId,
+      members: members.map((member) => ({
+        id: member.id,
+        nome: member.nome,
+        passosCount: member.passosConcluidos.length,
+        passosConcluidos: member.passosConcluidos,
+      })),
+    });
+    // #endregion
+
     return {
-      members: ((data ?? []) as MemberRow[]).map(mapMemberRowToListItem),
+      members,
       loadError: null,
     };
   } catch {
@@ -338,8 +419,25 @@ export async function loadMemberByIdAndCelulaId(
       throw error;
     }
 
+    const member = data ? mapMemberRowToListItem(data as MemberRow) : null;
+
+    // #region agent log
+    writeDebugLog("C", "lib/mapeamento/membros.ts:417", "Loaded member for edit page", {
+      memberId,
+      celulaId,
+      member: member
+        ? {
+            id: member.id,
+            nome: member.nome,
+            passosCount: member.passosConcluidos.length,
+            passosConcluidos: member.passosConcluidos,
+          }
+        : null,
+    });
+    // #endregion
+
     return {
-      member: data ? mapMemberRowToListItem(data as MemberRow) : null,
+      member,
       loadError: null,
     };
   } catch {

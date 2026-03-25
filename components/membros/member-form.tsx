@@ -22,11 +22,13 @@ import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
 import {
   initialSaveMemberState,
   type CelulaOption,
+  type MemberFormValues,
   type SaveMemberState,
 } from "@/lib/mapeamento/types";
 
 type MemberFormProps = {
   celulas: CelulaOption[];
+  initialValues?: MemberFormValues;
   loadError?: string | null;
   lockedAccessCode?: string;
   backHref?: string;
@@ -37,12 +39,16 @@ type MemberFormProps = {
     formData: FormData
   ) => Promise<SaveMemberState>;
   submitLabel?: string;
+  resetLabel?: string;
+  nameLabel?: string;
+  namePlaceholder?: string;
   title?: string;
   description?: string;
 };
 
 export function MemberForm({
   celulas,
+  initialValues,
   loadError = null,
   lockedAccessCode,
   backHref = "/",
@@ -50,6 +56,9 @@ export function MemberForm({
   showLockedContextCard = false,
   formAction: serverAction = saveLeaderMemberAction,
   submitLabel,
+  resetLabel,
+  nameLabel = "Nome do Membro",
+  namePlaceholder = "Digite o nome completo",
   title = "Trajetoria de Crescimento",
   description,
 }: MemberFormProps) {
@@ -60,9 +69,12 @@ export function MemberForm({
     serverAction,
     initialSaveMemberState
   );
-  const [nome, setNome] = useState("");
-  const [selectedCelulaId, setSelectedCelulaId] = useState("");
-  const [selectedPassos, setSelectedPassos] = useState<PassoTrajetoria[]>([]);
+  const initialNome = initialValues?.nome ?? "";
+  const initialCelulaId = initialValues?.celulaId ?? "";
+  const initialPassos = initialValues?.passosConcluidos ?? [];
+  const [nome, setNome] = useState(initialNome);
+  const [selectedCelulaId, setSelectedCelulaId] = useState(initialCelulaId);
+  const [selectedPassos, setSelectedPassos] = useState<PassoTrajetoria[]>(initialPassos);
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const formState = state ?? initialSaveMemberState;
   const fieldErrors = formState.fieldErrors ?? {};
@@ -119,15 +131,20 @@ export function MemberForm({
     <form
       action={formAction}
       onReset={() => {
-        setNome("");
-        setSelectedCelulaId("");
-        setSelectedPassos([]);
+        setNome(initialNome);
+        setSelectedCelulaId(initialCelulaId);
+        setSelectedPassos(initialPassos);
         setIsSelectorOpen(false);
       }}
       className="space-y-8 pb-32"
     >
       <section className="rounded-[24px] bg-[#5974AD] p-1 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
         <div className="relative" ref={selectorRef}>
+          <input
+            type="hidden"
+            name={MEMBER_FORM_FIELDS.id}
+            value={initialValues?.id ?? ""}
+          />
           <input
             type="hidden"
             name={MEMBER_FORM_FIELDS.codigoAcesso}
@@ -232,7 +249,7 @@ export function MemberForm({
       <section className="space-y-3">
         <label className="block">
           <span className="mb-3 block text-sm font-bold text-[#444750]">
-            Nome do Membro
+            {nameLabel}
           </span>
           <div className="relative">
             <input
@@ -241,7 +258,7 @@ export function MemberForm({
               value={nome}
               onChange={(event) => setNome(event.target.value)}
               disabled={isUnavailable || pending}
-              placeholder="Digite o nome completo"
+              placeholder={namePlaceholder}
               className="min-h-[68px] w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-6 pr-18 text-[1.25rem] font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
             />
             <span className="pointer-events-none absolute inset-y-0 right-6 flex items-center">
@@ -308,6 +325,15 @@ export function MemberForm({
       <div className="sticky bottom-4 z-20">
         <div className="rounded-4xl bg-linear-to-t from-[#F9F9FD] via-[#F9F9FD]/92 to-transparent p-3 pt-8">
           <div className="rounded-[1.4rem] bg-white/95 p-3 shadow-[0_-4px_24px_rgba(26,28,31,0.06)] backdrop-blur">
+            {resetLabel ? (
+              <button
+                type="reset"
+                disabled={isUnavailable || pending}
+                className="mb-3 inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-[#D4D9E4] px-4 text-sm font-bold uppercase tracking-[0.08em] text-[#444750] transition hover:bg-[#F4F6FB] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {resetLabel}
+              </button>
+            ) : null}
             <SubmitButton disabled={isUnavailable} label={submitLabel} />
           </div>
         </div>

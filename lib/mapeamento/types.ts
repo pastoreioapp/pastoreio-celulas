@@ -30,6 +30,7 @@ export type MemberListItem = {
 };
 
 export type SaveMemberFieldErrors = {
+  id?: string;
   codigoAcesso?: string;
   nome?: string;
   celulaId?: string;
@@ -49,6 +50,17 @@ export const initialSaveMemberState: SaveMemberState = {
 };
 
 export type CreateMemberInput = {
+  nome: string;
+  celulaId: string;
+  passosConcluidos: PassoTrajetoria[];
+};
+
+export type UpdateMemberInput = CreateMemberInput & {
+  id: string;
+};
+
+export type MemberFormValues = {
+  id?: string;
   nome: string;
   celulaId: string;
   passosConcluidos: PassoTrajetoria[];

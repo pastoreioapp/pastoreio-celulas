@@ -6,6 +6,7 @@ export const MAPEAMENTO_TABLES = {
 } as const;
 
 export const MEMBER_FORM_FIELDS = {
+  id: "id",
   nome: "nome",
   celulaId: "celula_id",
   passosConcluidos: "passos_concluidos",

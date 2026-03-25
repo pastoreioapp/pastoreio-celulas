@@ -6,9 +6,11 @@ import { MAPEAMENTO_SCHEMA, MAPEAMENTO_TABLES, MEMBER_FORM_FIELDS } from "@/lib/
 import {
   initialSaveMemberState,
   type CreateMemberInput,
+  type MemberFormValues,
   type MemberListItem,
   type SaveMemberFieldErrors,
   type SaveMemberState,
+  type UpdateMemberInput,
 } from "@/lib/mapeamento/types";
 import { getSupabaseConfigError, getSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -19,9 +21,14 @@ const PASSOS_VALIDOS = new Set<string>(TodosPassosTrajetoria);
 const SAVE_MEMBER_ERROR_MESSAGE =
   "Nao foi possivel salvar o membro agora. Verifique a conexao com o Supabase e tente novamente.";
 export const SAVE_MEMBER_SUCCESS_MESSAGE = "Membro salvo com sucesso.";
+export const UPDATE_MEMBER_SUCCESS_MESSAGE = "Membro atualizado com sucesso.";
 
 type ValidateMemberFormResult =
   | { success: true; data: CreateMemberInput }
+  | { success: false; state: SaveMemberState };
+
+type ValidateUpdateMemberFormResult =
+  | { success: true; data: UpdateMemberInput }
   | { success: false; state: SaveMemberState };
 
 type PersistMemberResult =
@@ -76,9 +83,12 @@ function mapMemberRowToListItem(member: MemberRow): MemberListItem {
   };
 }
 
-export function validateCreateMemberFormData(
+function validateMemberPayload(
   formData: FormData
-): ValidateMemberFormResult {
+): {
+  fieldErrors: SaveMemberFieldErrors;
+  payload: CreateMemberInput;
+} {
   const codigoAcesso = readTrimmedString(
     formData.get(MEMBER_FORM_FIELDS.codigoAcesso)
   );
@@ -119,6 +129,50 @@ export function validateCreateMemberFormData(
       "Encontramos um passo invalido. Atualize a pagina e tente novamente.";
   }
 
+  return {
+    fieldErrors,
+    payload: {
+      nome,
+      celulaId,
+      passosConcluidos: passosConcluidos as PassoTrajetoria[],
+    },
+  };
+}
+
+export function validateCreateMemberFormData(
+  formData: FormData
+): ValidateMemberFormResult {
+  const { fieldErrors, payload } = validateMemberPayload(formData);
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return {
+      success: false,
+      state: createSaveMemberState(
+        "error",
+        "Revise os campos destacados e tente novamente.",
+        fieldErrors
+      ),
+    };
+  }
+
+  return {
+    success: true,
+    data: payload,
+  };
+}
+
+export function validateUpdateMemberFormData(
+  formData: FormData
+): ValidateUpdateMemberFormResult {
+  const memberId = readTrimmedString(formData.get(MEMBER_FORM_FIELDS.id));
+  const { fieldErrors, payload } = validateMemberPayload(formData);
+
+  if (!memberId) {
+    fieldErrors.id = "Nao identificamos o membro que sera atualizado.";
+  } else if (!UUID_REGEX.test(memberId)) {
+    fieldErrors.id = "O identificador do membro e invalido.";
+  }
+
   if (Object.keys(fieldErrors).length > 0) {
     return {
       success: false,
@@ -133,9 +187,8 @@ export function validateCreateMemberFormData(
   return {
     success: true,
     data: {
-      nome,
-      celulaId,
-      passosConcluidos: passosConcluidos as PassoTrajetoria[],
+      ...payload,
+      id: memberId,
     },
   };
 }
@@ -164,6 +217,48 @@ export async function createMember(
       });
 
     if (error) {
+      return {
+        success: false,
+        message: SAVE_MEMBER_ERROR_MESSAGE,
+      };
+    }
+
+    return { success: true };
+  } catch {
+    return {
+      success: false,
+      message: SAVE_MEMBER_ERROR_MESSAGE,
+    };
+  }
+}
+
+export async function updateMember(
+  input: UpdateMemberInput
+): Promise<PersistMemberResult> {
+  const configError = getSupabaseConfigError();
+
+  if (configError) {
+    return {
+      success: false,
+      message: configError,
+    };
+  }
+
+  try {
+    const supabase = getSupabaseServerClient();
+    const { data, error } = await supabase
+      .schema(MAPEAMENTO_SCHEMA)
+      .from(MAPEAMENTO_TABLES.membros)
+      .update({
+        nome: input.nome,
+        celula_id: input.celulaId,
+        passos_concluidos: input.passosConcluidos,
+      })
+      .eq("id", input.id)
+      .eq("celula_id", input.celulaId)
+      .select("id");
+
+    if (error || (data?.length ?? 0) !== 1) {
       return {
         success: false,
         message: SAVE_MEMBER_ERROR_MESSAGE,
@@ -216,10 +311,62 @@ export async function loadMembersByCelulaId(
   }
 }
 
+export async function loadMemberByIdAndCelulaId(
+  memberId: string,
+  celulaId: string
+): Promise<{ member: MemberListItem | null; loadError: string | null }> {
+  const configError = getSupabaseConfigError();
+
+  if (configError) {
+    return {
+      member: null,
+      loadError: configError,
+    };
+  }
+
+  try {
+    const supabase = getSupabaseServerClient();
+    const { data, error } = await supabase
+      .schema(MAPEAMENTO_SCHEMA)
+      .from(MAPEAMENTO_TABLES.membros)
+      .select("id, nome, celula_id, passos_concluidos, created_at")
+      .eq("id", memberId)
+      .eq("celula_id", celulaId)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      member: data ? mapMemberRowToListItem(data as MemberRow) : null,
+      loadError: null,
+    };
+  } catch {
+    return {
+      member: null,
+      loadError: SAVE_MEMBER_ERROR_MESSAGE,
+    };
+  }
+}
+
+export function mapMemberToFormValues(member: MemberListItem): MemberFormValues {
+  return {
+    id: member.id,
+    nome: member.nome,
+    celulaId: member.celulaId ?? "",
+    passosConcluidos: member.passosConcluidos,
+  };
+}
+
 export function buildSaveMemberErrorState(message: string): SaveMemberState {
   return createSaveMemberState("error", message);
 }
 
 export function buildSaveMemberSuccessState(): SaveMemberState {
   return createSaveMemberState("success", SAVE_MEMBER_SUCCESS_MESSAGE);
+}
+
+export function buildUpdateMemberSuccessState(): SaveMemberState {
+  return createSaveMemberState("success", UPDATE_MEMBER_SUCCESS_MESSAGE);
 }

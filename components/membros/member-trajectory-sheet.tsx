@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect } from "react";
 
 import {
@@ -8,9 +9,11 @@ import {
   TotalPassosTrajetoria,
   type PassoTrajetoria,
 } from "@/app/types/trajetoria";
+import { buildLeaderEditMemberRoute } from "@/lib/mapeamento/routes";
 import type { MemberListItem } from "@/lib/mapeamento/types";
 
 type MemberTrajectorySheetProps = {
+  accessCode: string;
   member: MemberListItem | null;
   onClose: () => void;
 };
@@ -23,6 +26,7 @@ function isStepCompleted(
 }
 
 export function MemberTrajectorySheet({
+  accessCode,
   member,
   onClose,
 }: MemberTrajectorySheetProps) {
@@ -82,6 +86,12 @@ export function MemberTrajectorySheet({
                 {completedSteps} de {TotalPassosTrajetoria} passos concluídos (
                 {completionPercentage}%).
               </p>
+              <Link
+                href={buildLeaderEditMemberRoute(accessCode, member.id)}
+                className="mt-4 inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#5974AD] px-4 text-sm font-bold uppercase tracking-[0.08em] text-[#3F5B93] transition hover:bg-[#EEF3FF]"
+              >
+                Editar dados
+              </Link>
             </div>
 
             <button

@@ -38,6 +38,7 @@ const CELULA_ACCESS_CODE_ENTRIES: CelulaAccessEntry[] = [
   { code: "CEL-1028", celulaId: "debd0306-146b-46c8-9244-e09c0d2d65be", celulaNome: "Siloé" },
   { code: "CEL-1029", celulaId: "1e1700c6-c2eb-484a-a03f-4397942c43e9", celulaNome: "Talmidim" },
   { code: "CEL-1030", celulaId: "7825f968-f04d-4702-ad66-003f72b0d12e", celulaNome: "Vitória em Cristo" },
+  { code: "tadel", celulaId: "381937ee-d533-45f5-8268-59b58b7274a1", celulaNome: "Tadel" },
 ];
 
 function normalizeAccessCodeValue(value: string) {

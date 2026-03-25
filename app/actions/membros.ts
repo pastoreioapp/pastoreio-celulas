@@ -7,10 +7,13 @@ import {
   buildSaveMemberErrorState,
   buildSaveMemberSuccessState,
   createMember,
+  updateMember,
   validateCreateMemberFormData,
+  validateUpdateMemberFormData,
 } from "@/lib/mapeamento/membros";
 import {
   buildLeaderMembersRoute,
+  buildLeaderEditMemberRoute,
   buildMemberSelfRegistrationRoute,
 } from "@/lib/mapeamento/routes";
 import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
@@ -60,6 +63,31 @@ export async function saveSelfRegisterMemberAction(
   if (result.success) {
     revalidatePath(buildMemberSelfRegistrationRoute(accessCode));
     return buildSaveMemberSuccessState();
+  }
+
+  return buildSaveMemberErrorState(result.message);
+}
+
+export async function updateLeaderMemberAction(
+  _prevState: SaveMemberState,
+  formData: FormData
+): Promise<SaveMemberState> {
+  const accessCode = readAccessCode(formData);
+  const validation = validateUpdateMemberFormData(formData);
+
+  if (!validation.success) {
+    return validation.state;
+  }
+
+  const result = await updateMember(validation.data);
+
+  if (result.success) {
+    revalidatePath("/");
+    revalidatePath(buildLeaderMembersRoute(accessCode));
+    revalidatePath(
+      buildLeaderEditMemberRoute(accessCode, validation.data.id)
+    );
+    redirect(buildLeaderMembersRoute(accessCode));
   }
 
   return buildSaveMemberErrorState(result.message);

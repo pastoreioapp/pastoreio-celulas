@@ -7,7 +7,11 @@ import { TotalPassosTrajetoria } from "@/app/types/trajetoria";
 import { MemberTrajectorySheet } from "@/components/membros/member-trajectory-sheet";
 import { MemberSelfRegisterShare } from "@/components/membros/member-self-register-share";
 import type { CelulaOption, MemberListItem } from "@/lib/mapeamento/types";
-import { buildMemberSelfRegistrationRoute } from "@/lib/mapeamento/routes";
+import {
+  buildLeaderEditMemberRoute,
+  buildLeaderNewMemberRoute,
+  buildMemberSelfRegistrationRoute,
+} from "@/lib/mapeamento/routes";
 
 type MemberListProps = {
   accessCode: string;
@@ -21,6 +25,22 @@ function formatCreatedAt(value: string) {
     month: "2-digit",
     year: "numeric",
   }).format(new Date(value));
+}
+
+function formatPhone(value: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  if (value.length === 11) {
+    return `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+  }
+
+  if (value.length === 10) {
+    return `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6)}`;
+  }
+
+  return value;
 }
 
 export function MemberList({ accessCode, celula, members }: MemberListProps) {
@@ -51,7 +71,7 @@ export function MemberList({ accessCode, celula, members }: MemberListProps) {
           </div>
 
           <Link
-            href={`/lider/${accessCode}/novo`}
+            href={buildLeaderNewMemberRoute(accessCode)}
             className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-linear-to-b from-[#3F5B93] to-[#5974AD] px-5 text-sm font-bold uppercase tracking-widest text-white shadow-[0_18px_40px_rgba(63,91,147,0.22)] transition hover:brightness-105"
           >
             Cadastrar membro
@@ -67,7 +87,7 @@ export function MemberList({ accessCode, celula, members }: MemberListProps) {
               Use o botão de cadastro para registrar o primeiro membro desta célula.
             </p>
             <Link
-              href={`/lider/${accessCode}/novo`}
+              href={buildLeaderNewMemberRoute(accessCode)}
               className="mt-6 inline-flex min-h-12 items-center justify-center rounded-2xl border border-[#5974AD] px-5 text-sm font-bold uppercase tracking-widest text-[#3F5B93] transition hover:bg-[#EEF3FF]"
             >
               Cadastrar membro
@@ -97,6 +117,26 @@ export function MemberList({ accessCode, celula, members }: MemberListProps) {
                       <p className="mt-2 text-sm text-[#5C6070]">
                         Cadastrado em {formatCreatedAt(member.createdAt)}
                       </p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {member.telefone ? (
+                          <span className="inline-flex rounded-full bg-[#F4F6FB] px-3 py-1.5 text-xs font-semibold text-[#444750]">
+                            {formatPhone(member.telefone)}
+                          </span>
+                        ) : null}
+                        {member.estadoCivil ? (
+                          <span className="inline-flex rounded-full bg-[#F4F6FB] px-3 py-1.5 text-xs font-semibold text-[#444750]">
+                            {member.estadoCivil}
+                          </span>
+                        ) : null}
+                        {member.ministerios.map((ministerio) => (
+                          <span
+                            key={ministerio}
+                            className="inline-flex rounded-full bg-[#EEF8F1] px-3 py-1.5 text-xs font-semibold text-[#11643A]"
+                          >
+                            {ministerio}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="rounded-2xl bg-[#F3F6FD] px-4 py-3 text-sm font-semibold text-[#17305E]">
@@ -119,7 +159,7 @@ export function MemberList({ accessCode, celula, members }: MemberListProps) {
 
                   <div className="mt-5 flex flex-wrap gap-2">
                     {member.passosConcluidos.length > 0 ? (
-                      member.passosConcluidos.slice(0, 4).map((step) => (
+                      member.passosConcluidos.map((step) => (
                         <span
                           key={step}
                           className="inline-flex rounded-full bg-[#EEF3FF] px-3 py-1.5 text-xs font-semibold text-[#17305E]"
@@ -132,21 +172,23 @@ export function MemberList({ accessCode, celula, members }: MemberListProps) {
                         Nenhum passo marcado ainda
                       </span>
                     )}
-
-                    {member.passosConcluidos.length > 4 ? (
-                      <span className="inline-flex rounded-full bg-[#F4F4F6] px-3 py-1.5 text-xs font-semibold text-[#5C6070]">
-                        +{member.passosConcluidos.length - 4} passos
-                      </span>
-                    ) : null}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setExpandedMemberId(member.id)}
-                    className="mt-5 inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#5974AD] px-4 text-sm font-bold uppercase tracking-[0.08em] text-[#3F5B93] transition hover:bg-[#EEF3FF]"
-                  >
-                    Ver trajetória completa
-                  </button>
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedMemberId(member.id)}
+                      className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#5974AD] px-4 text-sm font-bold uppercase tracking-[0.08em] text-[#3F5B93] transition hover:bg-[#EEF3FF]"
+                    >
+                      Ver trajetória completa
+                    </button>
+                    <Link
+                      href={buildLeaderEditMemberRoute(accessCode, member.id)}
+                      className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-[#EEF3FF] px-4 text-sm font-bold uppercase tracking-[0.08em] text-[#17305E] transition hover:bg-[#DCE7FF]"
+                    >
+                      Editar dados
+                    </Link>
+                  </div>
                 </article>
               );
             })}
@@ -155,6 +197,7 @@ export function MemberList({ accessCode, celula, members }: MemberListProps) {
       </section>
 
       <MemberTrajectorySheet
+        accessCode={accessCode}
         member={expandedMember}
         onClose={() => setExpandedMemberId(null)}
       />

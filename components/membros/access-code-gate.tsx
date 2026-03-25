@@ -46,7 +46,7 @@ export function AccessCodeGate({
               autoCapitalize="characters"
               spellCheck={false}
               required
-              placeholder="Ex.: CEL-1001"
+              placeholder="Digite o codigo de acesso"
               onChange={(event) => {
                 setCode(event.target.value);
 

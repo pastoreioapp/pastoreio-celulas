@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 type MemberSelfRegisterShareProps = {
   href: string;
@@ -10,7 +10,13 @@ export function MemberSelfRegisterShare({
   href,
 }: MemberSelfRegisterShareProps) {
   const [copied, setCopied] = useState(false);
-  const shareUrl = href;
+  const shareUrl = useMemo(
+    () =>
+      typeof window === "undefined"
+        ? href
+        : new URL(href, window.location.origin).toString(),
+    [href]
+  );
 
   async function handleCopyLink() {
     try {
@@ -40,7 +46,7 @@ export function MemberSelfRegisterShare({
 
       <div className="mt-5 rounded-2xl border border-[#DCE3F1] bg-[#F7F9FD] p-3 sm:p-4">
         <p className="break-all text-sm font-medium text-[#1A1C1F]">
-          {shareUrl}
+          {href}
         </p>
       </div>
 

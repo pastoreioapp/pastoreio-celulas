@@ -1,0 +1,34 @@
+---
+description: Member UI component conventions (form contract, mobile UX, trajectory)
+globs: components/membros/**/*.tsx
+alwaysApply: false
+---
+
+# Member UI Components
+
+## Client-Only Imports
+These components are `"use client"`. They may import from:
+- `lib/mapeamento/trajetoria.ts` — trajectory steps, categories, totals
+- `lib/mapeamento/constants.ts` — `MEMBER_FORM_FIELDS`
+- `lib/mapeamento/types.ts` — `CelulaOption`, `MemberFormValues`, `SaveMemberState`, etc.
+- `lib/mapeamento/routes.ts` — URL builders
+- `lib/mapeamento/formatting.ts` — `formatPhone`, `formatBirthDate`, `formatCreatedAt`
+
+Never import from `celulas.ts`, `membros.ts`, `rotas.ts`, or `lib/supabase/*`.
+
+## Form Contract
+- `MemberForm` uses `useActionState` with a server action passed as prop.
+- All form `name` attributes use `MEMBER_FORM_FIELDS` constants.
+- Trajectory selections are React-controlled state. Selected values are submitted via hidden `<input>` elements with `name={MEMBER_FORM_FIELDS.passosConcluidos}` — one per selected step. Server reads them with `formData.getAll(...)`.
+- `codigo_acesso` and `celula_id` are also submitted as hidden inputs.
+- Do not convert this to uncontrolled checkboxes without also updating `getSelectedPassos` in `lib/mapeamento/membros.ts`.
+
+## Component Structure
+- `MemberForm` composes: `CelulaSelector`, `MemberPersonalFields`, `MemberTrajectoryFields`, `SubmitButton`.
+- Keep each subcomponent focused on its section. Shared state (form values, errors) is passed as props from `MemberForm`.
+
+## Mobile-First & Accessibility
+- Touch targets: minimum 44x44px.
+- Use accessible contrast ratios.
+- Prefer large, clear labels over icon-only controls.
+- Test visual hierarchy on narrow viewports first.

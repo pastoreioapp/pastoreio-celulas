@@ -1,0 +1,25 @@
+---
+description: Next.js App Router pages, layouts, and server actions conventions
+globs: app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# App Router & Server Actions
+
+## Pages and Layouts
+- Pages are async Server Components. They `await params`/`searchParams`, call loaders from `lib/mapeamento/*`, and render UI components.
+- Routes under `(lider)/lider/[codigo]` must resolve access via `resolveLeaderRouteAccess(codigo)` from `lib/mapeamento/rotas.ts` and call `notFound()` when it returns `null`.
+- The layout already validates access and renders the header/cell card. Pages should not re-render that context — just load their own data.
+
+## Server Actions (`app/actions/membros.ts`)
+- Signature: `(prevState: SaveMemberState, formData: FormData) => Promise<SaveMemberState>`.
+- Actions orchestrate only: read form data → call `validate*` → call `createMember`/`updateMember` → `revalidatePath` → `redirect` or return error state.
+- Business rules and validation belong in `lib/mapeamento/membros.ts`, not in action bodies.
+- Use `MEMBER_FORM_FIELDS` to read form fields — never use raw string keys.
+- `revalidatePath` targets the specific routes affected (use `build*Route` helpers), not `/`.
+
+## Adding a New Route
+1. Create the file under the appropriate route group.
+2. Use `resolveLeaderRouteAccess` for `[codigo]` routes (guard with `notFound()`).
+3. Build any links or redirects with `lib/mapeamento/routes.ts` helpers.
+4. If the route needs a new action, follow the existing pattern in `app/actions/membros.ts`.

@@ -1,0 +1,24 @@
+---
+description: SQL migration conventions and schema-domain alignment
+globs: migrations/**/*.sql
+alwaysApply: false
+---
+
+# SQL Migrations
+
+## Schema
+All tables live under the `mapeamento` schema. Use explicit `mapeamento.` prefix in migration SQL.
+
+## Cross-Layer Alignment
+Every migration must be accompanied by matching changes in the TypeScript domain layer:
+1. Column added/renamed → update the `*Row` type and `*_SELECT_COLUMNS` in the relevant `lib/mapeamento/*.ts` file.
+2. Column affects forms → update `MEMBER_FORM_FIELDS` in `constants.ts`, input types in `types.ts`, and validation in `membros.ts`.
+3. Column affects UI → update the mapper function and any component that displays the field.
+
+## Critical Columns
+- `passos_concluidos` (`TEXT[]` on `membros`) — values must exactly match `PassoTrajetoria` enum strings in `lib/mapeamento/trajetoria.ts`. A migration that changes step names requires a data backfill.
+- `codigo_acesso` (`TEXT UNIQUE` on `celulas`) — the normalized access code used for leader routing. Changes must consider existing links and client redirects.
+
+## Naming
+- Migration files are named sequentially with a descriptive suffix (e.g., `fourth_celula_codigo_acesso.sql`).
+- Use `ALTER TABLE` for additive changes; avoid `DROP` without explicit user confirmation.

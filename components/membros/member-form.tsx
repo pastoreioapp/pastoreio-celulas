@@ -1,23 +1,14 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
 
 import { saveLeaderMemberAction } from "@/app/actions/membros";
-import {
-  CategoriasTrajetoriaEntries,
-  type PassoTrajetoria,
-  TotalPassosTrajetoria,
-} from "@/app/types/trajetoria";
-import {
-  MemberInputIcon,
-} from "@/components/membros/member-form-icons";
-import {
-  CelulaAvatar,
-  CelulaContextCard,
-  CelulaContextContent,
-} from "@/components/membros/celula-context";
+import type { PassoTrajetoria } from "@/lib/mapeamento/trajetoria";
+import { MemberInputIcon } from "@/components/membros/member-form-icons";
+import { CelulaSelector } from "@/components/membros/celula-selector";
+import { MemberPersonalFields } from "@/components/membros/member-personal-fields";
+import { MemberTrajectoryFields } from "@/components/membros/member-trajectory-fields";
 import { SubmitButton } from "@/components/membros/submit-button";
-import { TrajetoriaSection } from "@/components/membros/trajetoria-section";
 import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
 import {
   initialSaveMemberState,
@@ -64,11 +55,12 @@ export function MemberForm({
 }: MemberFormProps) {
   const lockedCelulaId = lockedAccessCode ? (celulas[0]?.id ?? "") : "";
   const isLockedToSingleCelula = Boolean(lockedAccessCode);
-  const selectorRef = useRef<HTMLDivElement>(null);
+
   const [state, formAction, pending] = useActionState(
     serverAction,
     initialSaveMemberState
   );
+
   const initialNome = initialValues?.nome ?? "";
   const initialCelulaId = initialValues?.celulaId ?? "";
   const initialEstadoCivil = initialValues?.estadoCivil ?? "";
@@ -77,6 +69,7 @@ export function MemberForm({
   const initialDiscipuladorNome = initialValues?.discipuladorNome ?? "";
   const initialMinisterios = initialValues?.ministerios ?? "";
   const initialPassos = initialValues?.passosConcluidos ?? [];
+
   const [nome, setNome] = useState(initialNome);
   const [selectedCelulaId, setSelectedCelulaId] = useState(initialCelulaId);
   const [estadoCivil, setEstadoCivil] = useState(initialEstadoCivil);
@@ -85,7 +78,7 @@ export function MemberForm({
   const [discipuladorNome, setDiscipuladorNome] = useState(initialDiscipuladorNome);
   const [ministerios, setMinisterios] = useState(initialMinisterios);
   const [selectedPassos, setSelectedPassos] = useState<PassoTrajetoria[]>(initialPassos);
-  const [isSelectorOpen, setIsSelectorOpen] = useState(false);
+
   const formState = state ?? initialSaveMemberState;
   const fieldErrors = formState.fieldErrors ?? {};
   const formStatus = formState.status ?? "idle";
@@ -98,43 +91,12 @@ export function MemberForm({
     [celulaId, celulas]
   );
 
-  useEffect(() => {
-    if (!isSelectorOpen || isLockedToSingleCelula) {
-      return undefined;
-    }
-
-    function handlePointerDown(event: PointerEvent) {
-      if (!selectorRef.current?.contains(event.target as Node)) {
-        setIsSelectorOpen(false);
-      }
-    }
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setIsSelectorOpen(false);
-      }
-    }
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isLockedToSingleCelula, isSelectorOpen]);
-
   function togglePasso(passo: PassoTrajetoria) {
     setSelectedPassos((current) =>
       current.includes(passo)
         ? current.filter((item) => item !== passo)
         : [...current, passo]
     );
-  }
-
-  function handleSelectCelula(nextCelulaId: string) {
-    setSelectedCelulaId(nextCelulaId);
-    setIsSelectorOpen(false);
   }
 
   return (
@@ -149,117 +111,38 @@ export function MemberForm({
         setDiscipuladorNome(initialDiscipuladorNome);
         setMinisterios(initialMinisterios);
         setSelectedPassos(initialPassos);
-        setIsSelectorOpen(false);
       }}
       className="space-y-8 pb-32"
     >
-      <section className="rounded-[24px] bg-[#5974AD] p-1 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-        <div className="relative" ref={selectorRef}>
-          <input
-            type="hidden"
-            name={MEMBER_FORM_FIELDS.id}
-            value={initialValues?.id ?? ""}
-          />
-          <input
-            type="hidden"
-            name={MEMBER_FORM_FIELDS.codigoAcesso}
-            value={lockedAccessCode ?? ""}
-          />
-          <input
-            type="hidden"
-            name={MEMBER_FORM_FIELDS.celulaId}
-            value={celulaId}
-          />
+      <input
+        type="hidden"
+        name={MEMBER_FORM_FIELDS.id}
+        value={initialValues?.id ?? ""}
+      />
+      <input
+        type="hidden"
+        name={MEMBER_FORM_FIELDS.codigoAcesso}
+        value={lockedAccessCode ?? ""}
+      />
+      <input
+        type="hidden"
+        name={MEMBER_FORM_FIELDS.celulaId}
+        value={celulaId}
+      />
 
-          {isLockedToSingleCelula && showLockedContextCard ? (
-            <CelulaContextCard
-              celula={selectedCelula}
-              accessCode={lockedAccessCode ?? ""}
-              actionHref={backHref}
-              actionLabel={backLabel}
-            />
-          ) : !isLockedToSingleCelula ? (
-            <>
-              <button
-                type="button"
-                disabled={isUnavailable || pending}
-                aria-expanded={isSelectorOpen}
-                aria-haspopup="listbox"
-                aria-controls="celula-selector-options"
-                onClick={() => setIsSelectorOpen((current) => !current)}
-                className="relative w-full cursor-pointer overflow-hidden rounded-[22px] bg-white p-6 text-left transition disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                <CelulaContextContent celula={selectedCelula} />
-              </button>
-
-              {isSelectorOpen ? (
-                <div
-                  id="celula-selector-options"
-                  role="listbox"
-                  aria-label="Lista de celulas disponiveis"
-                  className="absolute inset-x-0 top-[calc(100%+12px)] z-30 rounded-[24px] border border-[#E3E8F3] bg-white p-3 shadow-[0_24px_48px_rgba(26,28,31,0.12)]"
-                >
-                  <div className="max-h-112 space-y-2 overflow-y-auto pr-1">
-                    {celulas.map((celula) => {
-                      const isSelected = celula.id === celulaId;
-
-                      return (
-                        <button
-                          key={celula.id}
-                          type="button"
-                          role="option"
-                          aria-selected={isSelected}
-                          onClick={() => handleSelectCelula(celula.id)}
-                          className={`w-full cursor-pointer rounded-[20px] border p-4 text-left transition ${
-                            isSelected
-                              ? "border-[#5974AD] bg-[#EEF3FF]"
-                              : "border-[#E7E8EE] bg-[#FBFBFE] hover:border-[#C8D3EA] hover:bg-white"
-                          }`}
-                        >
-                          <div className="flex items-start gap-4">
-                            <CelulaAvatar
-                              celula={celula}
-                              className="h-16 w-16 shrink-0"
-                              imageSizes="64px"
-                            />
-
-                            <div className="min-w-0 flex-1">
-                              <p className="text-[11px] font-bold uppercase tracking-widest text-[#3F5B93]">
-                                {celula.setor ? `SETOR ${celula.setor}` : "CELULA"}
-                              </p>
-                              <p className="font-heading mt-1 text-lg font-extrabold tracking-[-0.03em] text-[#1A1C1F]">
-                                {celula.nome}
-                              </p>
-                            </div>
-
-                            <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#B8C5E0]">
-                              {isSelected ? (
-                                <span className="h-2.5 w-2.5 rounded-full bg-[#5974AD]" />
-                              ) : null}
-                            </span>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : null}
-            </>
-          ) : null}
-        </div>
-
-        {fieldErrors.codigoAcesso ? (
-          <p className="mt-3 px-1 text-sm font-medium text-rose-100">
-            {fieldErrors.codigoAcesso}
-          </p>
-        ) : null}
-
-        {fieldErrors.celulaId ? (
-          <p className="mt-3 px-1 text-sm font-medium text-rose-100">
-            {fieldErrors.celulaId}
-          </p>
-        ) : null}
-      </section>
+      <CelulaSelector
+        celulas={celulas}
+        celulaId={celulaId}
+        selectedCelula={selectedCelula}
+        isLockedToSingleCelula={isLockedToSingleCelula}
+        showLockedContextCard={showLockedContextCard}
+        lockedAccessCode={lockedAccessCode ?? ""}
+        backHref={backHref}
+        backLabel={backLabel}
+        disabled={isUnavailable || pending}
+        onSelectCelula={setSelectedCelulaId}
+        fieldErrors={fieldErrors}
+      />
 
       <section className="space-y-3">
         <label className="block">
@@ -288,167 +171,28 @@ export function MemberForm({
         ) : null}
       </section>
 
-      <section className="space-y-5">
-        <div className="px-1">
-          <h2 className="font-heading text-2xl font-extrabold tracking-[-0.03em] text-[#1A1C1F] sm:text-[1.9rem]">
-            Dados do membro
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-[#444750]">
-            Registre as informações pessoais para facilitar o acompanhamento desta pessoa.
-          </p>
-        </div>
+      <MemberPersonalFields
+        estadoCivil={estadoCivil}
+        telefone={telefone}
+        dataNascimento={dataNascimento}
+        discipuladorNome={discipuladorNome}
+        ministerios={ministerios}
+        disabled={isUnavailable || pending}
+        fieldErrors={fieldErrors}
+        onEstadoCivilChange={setEstadoCivil}
+        onTelefoneChange={setTelefone}
+        onDataNascimentoChange={setDataNascimento}
+        onDiscipuladorNomeChange={setDiscipuladorNome}
+        onMinisteriosChange={setMinisterios}
+      />
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="block">
-            <span className="mb-3 block text-sm font-bold text-[#444750]">
-              Estado civil
-            </span>
-            <input
-              type="text"
-              name={MEMBER_FORM_FIELDS.estadoCivil}
-              value={estadoCivil}
-              onChange={(event) => setEstadoCivil(event.target.value)}
-              disabled={isUnavailable || pending}
-              placeholder="Ex.: Solteiro(a)"
-              className="min-h-14 w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 text-base font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
-            />
-            {fieldErrors.estadoCivil ? (
-              <p className="px-1 pt-2 text-sm font-medium text-rose-700">
-                {fieldErrors.estadoCivil}
-              </p>
-            ) : null}
-          </label>
-
-          <label className="block">
-            <span className="mb-3 block text-sm font-bold text-[#444750]">
-              Telefone
-            </span>
-            <input
-              type="tel"
-              name={MEMBER_FORM_FIELDS.telefone}
-              value={telefone}
-              onChange={(event) => setTelefone(event.target.value)}
-              disabled={isUnavailable || pending}
-              placeholder="(00) 00000-0000"
-              className="min-h-14 w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 text-base font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
-            />
-            {fieldErrors.telefone ? (
-              <p className="px-1 pt-2 text-sm font-medium text-rose-700">
-                {fieldErrors.telefone}
-              </p>
-            ) : null}
-          </label>
-
-          <label className="block">
-            <span className="mb-3 block text-sm font-bold text-[#444750]">
-              Data de nascimento
-            </span>
-            <input
-              type="date"
-              name={MEMBER_FORM_FIELDS.dataNascimento}
-              value={dataNascimento}
-              onChange={(event) => setDataNascimento(event.target.value)}
-              disabled={isUnavailable || pending}
-              className="min-h-14 w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 text-base font-medium text-[#1A1C1F] outline-none transition focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
-            />
-            {fieldErrors.dataNascimento ? (
-              <p className="px-1 pt-2 text-sm font-medium text-rose-700">
-                {fieldErrors.dataNascimento}
-              </p>
-            ) : null}
-          </label>
-
-          <label className="block">
-            <span className="mb-3 block text-sm font-bold text-[#444750]">
-              Discipulador
-            </span>
-            <input
-              type="text"
-              name={MEMBER_FORM_FIELDS.discipuladorNome}
-              value={discipuladorNome}
-              onChange={(event) => setDiscipuladorNome(event.target.value)}
-              disabled={isUnavailable || pending}
-              placeholder="Nome de quem discipula"
-              className="min-h-14 w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 text-base font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
-            />
-            {fieldErrors.discipuladorNome ? (
-              <p className="px-1 pt-2 text-sm font-medium text-rose-700">
-                {fieldErrors.discipuladorNome}
-              </p>
-            ) : null}
-          </label>
-
-          <label className="block sm:col-span-2">
-            <span className="mb-3 block text-sm font-bold text-[#444750]">
-              Ministérios
-            </span>
-            <textarea
-              name={MEMBER_FORM_FIELDS.ministerios}
-              value={ministerios}
-              onChange={(event) => setMinisterios(event.target.value)}
-              disabled={isUnavailable || pending}
-              placeholder="Ex.: Louvor, Intercessao, Midia"
-              rows={3}
-              className="w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 py-4 text-base font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
-            />
-            <p className="mt-2 px-1 text-sm leading-6 text-[#5C6070]">
-              Informe um ou mais ministérios separados por vírgula, ponto e vírgula ou quebra de linha.
-            </p>
-            {fieldErrors.ministerios ? (
-              <p className="px-1 pt-2 text-sm font-medium text-rose-700">
-                {fieldErrors.ministerios}
-              </p>
-            ) : null}
-          </label>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <div className="flex items-center justify-between gap-4 px-1">
-          <div>
-            <h2 className="font-heading text-2xl font-extrabold tracking-[-0.03em] text-[#1A1C1F] sm:text-[1.9rem]">
-              {title}
-            </h2>
-            {description ? (
-              <p className="mt-2 text-sm leading-6 text-[#444750]">
-                {description}
-              </p>
-            ) : null}
-            <p className="mt-2 text-sm leading-6 text-[#444750]">
-              {selectedPassos.length} de {TotalPassosTrajetoria} passos marcados
-            </p>
-          </div>
-          <span className="rounded-full bg-[#D8E2FF] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[#001A42]">
-            Passo a Passo
-          </span>
-        </div>
-
-        {CategoriasTrajetoriaEntries.map(([categoria, passos], index) => (
-          <TrajetoriaSection
-            key={categoria}
-            categoria={categoria}
-            passos={passos}
-            selectedPassos={selectedPassos}
-            onTogglePasso={togglePasso}
-            defaultOpen={index === 0}
-          />
-        ))}
-
-        {selectedPassos.map((passo) => (
-          <input
-            key={passo}
-            type="hidden"
-            name={MEMBER_FORM_FIELDS.passosConcluidos}
-            value={passo}
-          />
-        ))}
-
-        {fieldErrors.passos ? (
-          <p className="px-1 text-sm font-medium text-rose-700">
-            {fieldErrors.passos}
-          </p>
-        ) : null}
-      </section>
+      <MemberTrajectoryFields
+        selectedPassos={selectedPassos}
+        onTogglePasso={togglePasso}
+        title={title}
+        description={description}
+        fieldError={fieldErrors.passos}
+      />
 
       <div aria-live="polite" className="pointer-events-none fixed inset-x-4 top-20 z-40 flex justify-center sm:inset-x-auto sm:right-6 sm:top-24">
         {formMessage ? (

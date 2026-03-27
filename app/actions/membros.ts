@@ -30,7 +30,7 @@ export async function saveLeaderMemberAction(
   formData: FormData
 ): Promise<SaveMemberState> {
   const accessCode = readAccessCode(formData);
-  const validation = validateCreateMemberFormData(formData);
+  const validation = await validateCreateMemberFormData(formData);
 
   if (!validation.success) {
     return validation.state;
@@ -39,7 +39,6 @@ export async function saveLeaderMemberAction(
   const result = await createMember(validation.data);
 
   if (result.success) {
-    revalidatePath("/");
     revalidatePath(buildLeaderMembersRoute(accessCode));
     redirect(buildLeaderMembersRoute(accessCode));
   }
@@ -52,7 +51,7 @@ export async function saveSelfRegisterMemberAction(
   formData: FormData
 ): Promise<SaveMemberState> {
   const accessCode = readAccessCode(formData);
-  const validation = validateCreateMemberFormData(formData);
+  const validation = await validateCreateMemberFormData(formData);
 
   if (!validation.success) {
     return validation.state;
@@ -62,6 +61,7 @@ export async function saveSelfRegisterMemberAction(
 
   if (result.success) {
     revalidatePath(buildMemberSelfRegistrationRoute(accessCode));
+    revalidatePath(buildLeaderMembersRoute(accessCode));
     return buildSaveMemberSuccessState();
   }
 
@@ -73,7 +73,7 @@ export async function updateLeaderMemberAction(
   formData: FormData
 ): Promise<SaveMemberState> {
   const accessCode = readAccessCode(formData);
-  const validation = validateUpdateMemberFormData(formData);
+  const validation = await validateUpdateMemberFormData(formData);
 
   if (!validation.success) {
     return validation.state;
@@ -82,7 +82,6 @@ export async function updateLeaderMemberAction(
   const result = await updateMember(validation.data);
 
   if (result.success) {
-    revalidatePath("/");
     revalidatePath(buildLeaderMembersRoute(accessCode));
     revalidatePath(
       buildLeaderEditMemberRoute(accessCode, validation.data.id)

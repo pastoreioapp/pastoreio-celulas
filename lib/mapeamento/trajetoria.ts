@@ -27,7 +27,6 @@ export enum PassoTrajetoria {
   APROVACAO_PASTOR = "Aprovação do Pastor de Rede",
 }
 
-// Helper para organizar por categorias na UI
 export const CategoriasTrajetoria = {
   "PASTOREIO 01": [
     PassoTrajetoria.ASSIDUO_CULTO,

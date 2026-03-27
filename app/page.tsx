@@ -3,7 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 
 import { AccessCodeGate } from "@/components/membros/access-code-gate";
-import { resolveCelulaAccess } from "@/lib/mapeamento/acesso";
+import { loadCelulaByAccessCode } from "@/lib/mapeamento/celulas";
 import { ACCESS_CODE_SEARCH_PARAM } from "@/lib/mapeamento/constants";
 import { buildLeaderMembersRoute } from "@/lib/mapeamento/routes";
 
@@ -22,7 +22,7 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   const params = await searchParams;
   const rawCode = readSearchParamValue(params[ACCESS_CODE_SEARCH_PARAM]);
-  const resolvedAccess = resolveCelulaAccess(rawCode);
+  const resolvedAccess = await loadCelulaByAccessCode(rawCode);
 
   if (resolvedAccess) {
     redirect(buildLeaderMembersRoute(resolvedAccess.code));

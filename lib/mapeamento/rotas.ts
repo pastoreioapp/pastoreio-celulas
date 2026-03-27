@@ -1,23 +1,22 @@
 import "server-only";
 
-import { resolveCelulaAccess } from "@/lib/mapeamento/acesso";
-import { loadCelulaOptionById } from "@/lib/mapeamento/celulas";
+import { cache } from "react";
 
-export async function resolveLeaderRouteAccess(code: string) {
-  const access = resolveCelulaAccess(code);
+import { loadCelulaByAccessCode } from "@/lib/mapeamento/celulas";
 
-  if (!access) {
-    return null;
-  }
+export const resolveLeaderRouteAccess = cache(async (code: string) => {
+  const resolved = await loadCelulaByAccessCode(code);
 
-  const { celulas, loadError } = await loadCelulaOptionById(access.celulaId);
-
-  if (loadError || celulas.length === 0) {
+  if (!resolved) {
     return null;
   }
 
   return {
-    access,
-    celula: celulas[0],
+    access: {
+      code: resolved.code,
+      celulaId: resolved.celulaId,
+      celulaNome: resolved.celulaNome,
+    },
+    celula: resolved.celula,
   };
-}
+});

@@ -8,7 +8,8 @@ import {
   CategoriasTrajetoriaEntries,
   TotalPassosTrajetoria,
   type PassoTrajetoria,
-} from "@/app/types/trajetoria";
+} from "@/lib/mapeamento/trajetoria";
+import { formatBirthDate, formatPhone } from "@/lib/mapeamento/formatting";
 import { buildLeaderEditMemberRoute } from "@/lib/mapeamento/routes";
 import type { MemberListItem } from "@/lib/mapeamento/types";
 
@@ -17,36 +18,6 @@ type MemberTrajectorySheetProps = {
   member: MemberListItem | null;
   onClose: () => void;
 };
-
-function formatPhone(value: string | null) {
-  if (!value) {
-    return "Nao informado";
-  }
-
-  const digits = value.replace(/\D/g, "");
-
-  if (digits.length === 11) {
-    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
-  }
-
-  if (digits.length === 10) {
-    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
-  }
-
-  return value;
-}
-
-function formatBirthDate(value: string | null) {
-  if (!value) {
-    return "Nao informada";
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(`${value}T00:00:00.000Z`));
-}
 
 function isStepCompleted(
   selectedSteps: PassoTrajetoria[],
@@ -168,7 +139,7 @@ export function MemberTrajectorySheet({
                     Telefone
                   </dt>
                   <dd className="mt-1 text-[15px] font-medium leading-6 text-[#1A1C1F]">
-                    {formatPhone(member.telefone)}
+                    {formatPhone(member.telefone) ?? "Nao informado"}
                   </dd>
                 </div>
 

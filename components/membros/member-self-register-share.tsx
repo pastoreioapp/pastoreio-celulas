@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 type MemberSelfRegisterShareProps = {
   href: string;
@@ -10,17 +10,11 @@ export function MemberSelfRegisterShare({
   href,
 }: MemberSelfRegisterShareProps) {
   const [copied, setCopied] = useState(false);
-  const shareUrl = useMemo(
-    () =>
-      typeof window === "undefined"
-        ? href
-        : new URL(href, window.location.origin).toString(),
-    [href]
-  );
 
   async function handleCopyLink() {
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      const absoluteUrl = new URL(href, window.location.origin).toString();
+      await navigator.clipboard.writeText(absoluteUrl);
       setCopied(true);
 
       window.setTimeout(() => {
@@ -59,7 +53,7 @@ export function MemberSelfRegisterShare({
           {copied ? "Link copiado" : "Copiar link"}
         </button>
         <a
-          href={shareUrl}
+          href={href}
           target="_blank"
           rel="noreferrer"
           className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-[#5974AD] px-5 text-sm font-bold uppercase tracking-widest text-[#3F5B93] transition hover:bg-[#EEF3FF]"

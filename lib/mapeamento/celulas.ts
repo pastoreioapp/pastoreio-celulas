@@ -1,11 +1,13 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { MAPEAMENTO_SCHEMA, MAPEAMENTO_TABLES } from "@/lib/mapeamento/constants";
 import type { CelulaOption, LoadCelulasResult } from "@/lib/mapeamento/types";
 import { getSupabaseConfigError, getSupabaseServerClient } from "@/lib/supabase/server";
 
 const CELULAS_SELECT_COLUMNS =
-  "id, nome, setor, lideres, dia_semana, horario, foto_url";
+  "id, nome, setor, lideres, dia_semana, horario, foto_url, codigo_acesso";
 const DEFAULT_CELULA_PHOTOS_BUCKET = "celulas";
 const LOAD_CELULAS_ERROR_MESSAGE =
   "Nao foi possivel carregar as celulas agora. Verifique a conexao com o Supabase.";
@@ -18,6 +20,7 @@ type CelulaRow = {
   dia_semana: string | null;
   horario: string | null;
   foto_url: string | null;
+  codigo_acesso: string | null;
 };
 
 function isAbsoluteUrl(value: string) {
@@ -68,6 +71,7 @@ function mapCelulaRowToOption(
     diaSemana: celula.dia_semana,
     horario: celula.horario,
     fotoUrl: resolvePhotoUrl(celula.foto_url),
+    codigoAcesso: celula.codigo_acesso,
   };
 }
 
@@ -125,24 +129,129 @@ export async function loadCelulaOptions(): Promise<LoadCelulasResult> {
 export async function loadCelulaOptionById(
   celulaId: string
 ): Promise<LoadCelulasResult> {
-  const result = await loadCelulaOptions();
+  const configError = getSupabaseConfigError();
 
-  if (result.loadError) {
-    return result;
-  }
-
-  const celula = result.celulas.find((item) => item.id === celulaId);
-
-  if (!celula) {
+  if (configError) {
     return {
       celulas: [],
-      loadError:
-        "Nao foi possivel localizar a celula vinculada a este codigo. Atualize os codigos cadastrados.",
+      loadError: configError,
     };
   }
 
-  return {
-    celulas: [celula],
-    loadError: null,
-  };
+  try {
+    const supabase = getSupabaseServerClient();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const celulaPhotosBucket =
+      process.env.NEXT_PUBLIC_SUPABASE_CELULAS_BUCKET ?? DEFAULT_CELULA_PHOTOS_BUCKET;
+    const { data, error } = await supabase
+      .schema(MAPEAMENTO_SCHEMA)
+      .from(MAPEAMENTO_TABLES.celulas)
+      .select(CELULAS_SELECT_COLUMNS)
+      .eq("id", celulaId)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      return {
+        celulas: [],
+        loadError:
+          "Nao foi possivel localizar a celula vinculada a este codigo. Atualize os codigos cadastrados.",
+      };
+    }
+
+    const celula = mapCelulaRowToOption(data as CelulaRow, (fotoUrl) =>
+      supabaseUrl
+        ? resolveCelulaPhotoUrl(
+            fotoUrl,
+            supabaseUrl,
+            celulaPhotosBucket,
+            (path) =>
+              supabase.storage.from(celulaPhotosBucket).getPublicUrl(path).data.publicUrl
+          )
+        : null
+    );
+
+    return {
+      celulas: [celula],
+      loadError: null,
+    };
+  } catch {
+    return {
+      celulas: [],
+      loadError: LOAD_CELULAS_ERROR_MESSAGE,
+    };
+  }
 }
+
+function normalizeAccessCodeValue(value: string) {
+  return value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+
+export function normalizeAccessCode(code: string | null | undefined) {
+  return typeof code === "string" ? normalizeAccessCodeValue(code) : "";
+}
+
+export type ResolvedCelulaAccess = {
+  code: string;
+  celulaId: string;
+  celulaNome: string;
+  celula: CelulaOption;
+};
+
+export const loadCelulaByAccessCode = cache(
+  async (rawCode: string | null | undefined): Promise<ResolvedCelulaAccess | null> => {
+    const normalized = normalizeAccessCode(rawCode);
+
+    if (!normalized) {
+      return null;
+    }
+
+    const configError = getSupabaseConfigError();
+
+    if (configError) {
+      return null;
+    }
+
+    try {
+      const supabase = getSupabaseServerClient();
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const celulaPhotosBucket =
+        process.env.NEXT_PUBLIC_SUPABASE_CELULAS_BUCKET ?? DEFAULT_CELULA_PHOTOS_BUCKET;
+      const { data, error } = await supabase
+        .schema(MAPEAMENTO_SCHEMA)
+        .from(MAPEAMENTO_TABLES.celulas)
+        .select(CELULAS_SELECT_COLUMNS)
+        .eq("codigo_acesso", normalized)
+        .maybeSingle();
+
+      if (error || !data) {
+        return null;
+      }
+
+      const row = data as CelulaRow;
+      const celula = mapCelulaRowToOption(row, (fotoUrl) =>
+        supabaseUrl
+          ? resolveCelulaPhotoUrl(
+              fotoUrl,
+              supabaseUrl,
+              celulaPhotosBucket,
+              (path) =>
+                supabase.storage.from(celulaPhotosBucket).getPublicUrl(path).data.publicUrl
+            )
+          : null
+      );
+
+      return {
+        code: normalized,
+        celulaId: celula.id,
+        celulaNome: celula.nome,
+        celula,
+      };
+    } catch {
+      return null;
+    }
+  }
+);

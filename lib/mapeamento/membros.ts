@@ -1,7 +1,7 @@
 import "server-only";
 
-import { TodosPassosTrajetoria, type PassoTrajetoria } from "@/app/types/trajetoria";
-import { resolveCelulaAccess } from "@/lib/mapeamento/acesso";
+import { TodosPassosTrajetoria, type PassoTrajetoria } from "@/lib/mapeamento/trajetoria";
+import { loadCelulaByAccessCode } from "@/lib/mapeamento/celulas";
 import { MAPEAMENTO_SCHEMA, MAPEAMENTO_TABLES, MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
 import {
   initialSaveMemberState,
@@ -139,12 +139,12 @@ function mapMemberRowToListItem(member: MemberRow): MemberListItem {
   };
 }
 
-function validateMemberPayload(
+async function validateMemberPayload(
   formData: FormData
-): {
+): Promise<{
   fieldErrors: SaveMemberFieldErrors;
   payload: CreateMemberInput;
-} {
+}> {
   const codigoAcesso = readTrimmedString(
     formData.get(MEMBER_FORM_FIELDS.codigoAcesso)
   );
@@ -167,7 +167,7 @@ function validateMemberPayload(
   );
   const passosConcluidos = getSelectedPassos(formData);
   const fieldErrors: SaveMemberFieldErrors = {};
-  const resolvedAccess = resolveCelulaAccess(codigoAcesso);
+  const resolvedAccess = await loadCelulaByAccessCode(codigoAcesso);
 
   if (!codigoAcesso) {
     fieldErrors.codigoAcesso = "Informe o codigo de acesso da celula.";
@@ -239,10 +239,10 @@ function validateMemberPayload(
   };
 }
 
-export function validateCreateMemberFormData(
+export async function validateCreateMemberFormData(
   formData: FormData
-): ValidateMemberFormResult {
-  const { fieldErrors, payload } = validateMemberPayload(formData);
+): Promise<ValidateMemberFormResult> {
+  const { fieldErrors, payload } = await validateMemberPayload(formData);
 
   if (Object.keys(fieldErrors).length > 0) {
     return {
@@ -261,11 +261,11 @@ export function validateCreateMemberFormData(
   };
 }
 
-export function validateUpdateMemberFormData(
+export async function validateUpdateMemberFormData(
   formData: FormData
-): ValidateUpdateMemberFormResult {
+): Promise<ValidateUpdateMemberFormResult> {
   const memberId = readTrimmedString(formData.get(MEMBER_FORM_FIELDS.id));
-  const { fieldErrors, payload } = validateMemberPayload(formData);
+  const { fieldErrors, payload } = await validateMemberPayload(formData);
 
   if (!memberId) {
     fieldErrors.id = "Nao identificamos o membro que sera atualizado.";

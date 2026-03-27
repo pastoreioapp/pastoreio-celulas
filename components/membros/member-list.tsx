@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { TotalPassosTrajetoria } from "@/app/types/trajetoria";
+import { TotalPassosTrajetoria } from "@/lib/mapeamento/trajetoria";
 import { MemberTrajectorySheet } from "@/components/membros/member-trajectory-sheet";
 import { MemberSelfRegisterShare } from "@/components/membros/member-self-register-share";
+import { formatCreatedAt, formatPhone } from "@/lib/mapeamento/formatting";
 import type { CelulaOption, MemberListItem } from "@/lib/mapeamento/types";
 import {
   buildLeaderEditMemberRoute,
@@ -18,30 +19,6 @@ type MemberListProps = {
   celula: CelulaOption;
   members: MemberListItem[];
 };
-
-function formatCreatedAt(value: string) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(value));
-}
-
-function formatPhone(value: string | null) {
-  if (!value) {
-    return null;
-  }
-
-  if (value.length === 11) {
-    return `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
-  }
-
-  if (value.length === 10) {
-    return `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6)}`;
-  }
-
-  return value;
-}
 
 export function MemberList({ accessCode, celula, members }: MemberListProps) {
   const [expandedMemberId, setExpandedMemberId] = useState<string | null>(null);
@@ -145,9 +122,9 @@ export function MemberList({ accessCode, celula, members }: MemberListProps) {
                   </div>
 
                   <div className="mt-5">
-                    <div className="flex items-center justify-between text-sm font-medium text-[#444750]">
-                      <span>Trajetória concluída</span>
-                      <span>{progressPercentage}%</span>
+                    <div className="flex items-center justify-between text-sm text-[#444750]">
+                      <span className="font-semibold tracking-wide uppercase text-[#17305E]">Trajetória concluída</span>
+                      <span className="font-bold text-[#3F5B93]">{progressPercentage}%</span>
                     </div>
                     <div className="mt-2 h-3 rounded-full bg-[#E7EAF3]">
                       <div
@@ -155,23 +132,6 @@ export function MemberList({ accessCode, celula, members }: MemberListProps) {
                         style={{ width: `${progressPercentage}%` }}
                       />
                     </div>
-                  </div>
-
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {member.passosConcluidos.length > 0 ? (
-                      member.passosConcluidos.map((step) => (
-                        <span
-                          key={step}
-                          className="inline-flex rounded-full bg-[#EEF3FF] px-3 py-1.5 text-xs font-semibold text-[#17305E]"
-                        >
-                          {step}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="inline-flex rounded-full bg-[#F4F4F6] px-3 py-1.5 text-xs font-semibold text-[#5C6070]">
-                        Nenhum passo marcado ainda
-                      </span>
-                    )}
                   </div>
 
                   <div className="mt-5 flex flex-wrap gap-3">

@@ -6,10 +6,15 @@ import { CelulaContextCard } from "@/components/membros/celula-context";
 import { LeaderPageRefresh } from "@/components/membros/leader-page-refresh";
 import { resolveLeaderRouteAccess } from "@/lib/mapeamento/rotas";
 
+type LeaderAreaLayoutProps = {
+  children: React.ReactNode;
+  params: Promise<{ codigo: string }>;
+};
+
 export default async function LeaderAreaLayout({
   children,
   params,
-}: LayoutProps<"/lider/[codigo]">) {
+}: LeaderAreaLayoutProps) {
   await connection();
 
   const { codigo } = await params;

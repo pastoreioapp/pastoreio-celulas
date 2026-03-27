@@ -1,4 +1,4 @@
-import type { PassoTrajetoria } from "@/app/types/trajetoria";
+import type { PassoTrajetoria } from "@/lib/mapeamento/trajetoria";
 
 export type CelulaOption = {
   id: string;
@@ -8,17 +8,12 @@ export type CelulaOption = {
   diaSemana: string | null;
   horario: string | null;
   fotoUrl: string | null;
+  codigoAcesso: string | null;
 };
 
 export type LoadCelulasResult = {
   celulas: CelulaOption[];
   loadError: string | null;
-};
-
-export type CelulaAccessView = {
-  code: string;
-  celulaId: string;
-  celulaNome: string;
 };
 
 export type MemberListItem = {

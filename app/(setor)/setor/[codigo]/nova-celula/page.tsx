@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { CelulaForm } from "@/components/membros/celula-form";
+import { CelulaForm } from "@/components/celulas/celula-form";
 import { resolveSetorRouteAccess } from "@/lib/mapeamento/rotas";
 
 type SetorNewCelulaPageProps = {

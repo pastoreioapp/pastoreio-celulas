@@ -2,7 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { saveSelfRegisterMemberAction } from "@/app/actions/membros";
-import { CelulaAvatar } from "@/components/membros/celula-context";
+import { CelulaAvatar } from "@/components/celulas/celula-context";
 import { MemberForm } from "@/components/membros/member-form";
 import { resolveLeaderRouteAccess } from "@/lib/mapeamento/rotas";
 

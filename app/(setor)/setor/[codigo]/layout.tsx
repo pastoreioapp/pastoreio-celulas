@@ -2,8 +2,8 @@ import { connection } from "next/server";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import { BackButton } from "@/components/membros/back-button";
-import { SetorContextCard } from "@/components/membros/setor-context";
+import { BackButton } from "@/components/ui/back-button";
+import { SetorContextCard } from "@/components/setores/setor-context";
 import { resolveSetorRouteAccess } from "@/lib/mapeamento/rotas";
 
 type SetorAreaLayoutProps = {

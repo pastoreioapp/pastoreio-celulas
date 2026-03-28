@@ -6,7 +6,7 @@ import {
   CelulaAvatar,
   CelulaContextCard,
   CelulaContextContent,
-} from "@/components/membros/celula-context";
+} from "@/components/celulas/celula-context";
 import type { CelulaOption } from "@/lib/mapeamento/types";
 
 type CelulaSelectorProps = {

@@ -1,10 +1,22 @@
 ---
 description: UI component conventions (forms, lists, insights, mobile UX)
-globs: components/membros/**/*.tsx
+globs: components/**/*.tsx
 alwaysApply: false
 ---
 
-# UI Components (`components/membros/`)
+# UI Components (`components/`)
+
+## Folder Structure
+| Folder | Domain | Components |
+|--------|--------|------------|
+| `components/ui/` | Generic primitives (no domain knowledge) | `back-button`, `submit-button`, `icons` |
+| `components/access/` | Access code gate (landing page) | `access-code-gate` |
+| `components/celulas/` | Cell domain | `celula-context`, `celula-selector`, `celula-list`, `celula-form` |
+| `components/setores/` | Sector domain | `setor-context` |
+| `components/membros/` | Member domain | `member-form`, `member-personal-fields`, `member-trajectory-fields`, `member-trajectory-sheet`, `member-list`, `member-self-register-share` |
+| `components/trajetoria/` | Trajectory accordion sections | `trajetoria-section` |
+| `components/insights/` | Analytics / insights panel | `insights-panel` |
+| `components/behavior/` | Infrastructure / lifecycle | `leader-page-refresh` |
 
 ## Client-Only Imports
 These components are `"use client"`. They may import from:
@@ -35,23 +47,24 @@ Never import from `celulas.ts`, `membros.ts`, `setores.ts`, `rotas.ts`, or `lib/
 - When `celulas` is not provided (celula context), only general insights are shown.
 
 ## Component Structure
-- `MemberForm` composes: `CelulaSelector`, `MemberPersonalFields`, `MemberTrajectoryFields`, `SubmitButton`.
-- `MemberList` composes: `MemberSelfRegisterShare`, `InsightsPanel`, `MemberTrajectorySheet`.
+- `MemberForm` composes: `CelulaSelector` (from `celulas/`), `MemberPersonalFields`, `MemberTrajectoryFields`, `SubmitButton` (from `ui/`).
+- `MemberList` composes: `MemberSelfRegisterShare`, `InsightsPanel` (from `insights/`), `MemberTrajectorySheet`.
 - `CelulaList` renders cell cards with links to `/lider/[codigo]` and a "Cadastrar celula" button.
 - `InsightsPanel` renders: `StatCard` grid, category `ProgressBar` list, and optional `CelulaRankingList`.
 - Keep each subcomponent focused on its section. Shared state (form values, errors) is passed as props.
 
 ## Key Components
-| Component | Purpose |
-|-----------|---------|
-| `member-list.tsx` | Member listing with trajectory progress bars and insights |
-| `celula-list.tsx` | Cell listing for sector view with "Cadastrar celula" button |
-| `celula-form.tsx` | Cell creation form (nome, lideres, dia_semana, horario, codigo_acesso) |
-| `insights-panel.tsx` | Trajectory insights with stat cards, category progress, and per-cell ranking |
-| `setor-context.tsx` | Sector context card for sector header |
-| `celula-context.tsx` | Cell context card (`CelulaContextCard`, `CelulaAvatar`) |
-| `back-button.tsx` | History-based back navigation in headers |
-| `access-code-gate.tsx` | Unified access code form with celula/setor toggle |
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| `member-list.tsx` | `membros/` | Member listing with trajectory progress bars and insights |
+| `celula-list.tsx` | `celulas/` | Cell listing for sector view with "Cadastrar celula" button |
+| `celula-form.tsx` | `celulas/` | Cell creation form (nome, lideres, dia_semana, horario, codigo_acesso) |
+| `insights-panel.tsx` | `insights/` | Trajectory insights with stat cards, category progress, and per-cell ranking |
+| `setor-context.tsx` | `setores/` | Sector context card for sector header |
+| `celula-context.tsx` | `celulas/` | Cell context card (`CelulaContextCard`, `CelulaAvatar`) |
+| `back-button.tsx` | `ui/` | History-based back navigation in headers |
+| `access-code-gate.tsx` | `access/` | Unified access code form with celula/setor toggle |
+| `icons.tsx` | `ui/` | Shared icon wrappers (leader, schedule, accordion, pastoreio, save, etc.) |
 
 ## Mobile-First & Accessibility
 - Touch targets: minimum 44x44px.

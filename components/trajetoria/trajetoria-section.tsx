@@ -11,7 +11,7 @@ import {
   LiderCelulaIcon,
   PastoreioOneIcon,
   PastoreioTwoIcon,
-} from "@/components/membros/member-form-icons";
+} from "@/components/ui/icons";
 
 type TrajetoriaSectionProps = {
   categoria: CategoriaTrajetoria;

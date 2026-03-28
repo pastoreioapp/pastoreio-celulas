@@ -2,9 +2,9 @@ import { connection } from "next/server";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import { BackButton } from "@/components/membros/back-button";
-import { CelulaContextCard } from "@/components/membros/celula-context";
-import { LeaderPageRefresh } from "@/components/membros/leader-page-refresh";
+import { BackButton } from "@/components/ui/back-button";
+import { CelulaContextCard } from "@/components/celulas/celula-context";
+import { LeaderPageRefresh } from "@/components/behavior/leader-page-refresh";
 import { resolveLeaderRouteAccess } from "@/lib/mapeamento/rotas";
 
 type LeaderAreaLayoutProps = {

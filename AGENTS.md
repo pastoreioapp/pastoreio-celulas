@@ -46,8 +46,19 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | `setores.ts` | Sector loading, access code resolution via DB |
 | `rotas.ts` | Route-level access resolution with `React.cache` (leader and sector) |
 
-### UI (`components/membros/`)
-Form, list, selectors, trajectory sections, insights panel, back button, context cards. Client Components only import from client-safe modules (`trajetoria`, `constants`, `types`, `routes`, `formatting`).
+### UI (`components/`)
+Client Components organized by domain. They only import from client-safe modules (`trajetoria`, `constants`, `types`, `routes`, `formatting`).
+
+| Folder | Domain | Components |
+|--------|--------|------------|
+| `components/ui/` | Generic primitives | `back-button`, `submit-button`, `icons` |
+| `components/access/` | Access code gate | `access-code-gate` |
+| `components/celulas/` | Cell domain | `celula-context`, `celula-selector`, `celula-list`, `celula-form` |
+| `components/setores/` | Sector domain | `setor-context` |
+| `components/membros/` | Member domain | `member-form`, `member-personal-fields`, `member-trajectory-fields`, `member-trajectory-sheet`, `member-list`, `member-self-register-share` |
+| `components/trajetoria/` | Trajectory sections | `trajetoria-section` |
+| `components/insights/` | Analytics panel | `insights-panel` |
+| `components/behavior/` | Infrastructure / lifecycle | `leader-page-refresh` |
 
 ### Supabase (`lib/supabase/server.ts`)
 Server-only client. All DB access flows through `lib/mapeamento/*`.

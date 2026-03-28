@@ -2,7 +2,7 @@
 
 import {
   LeaderChipIcon,
-} from "@/components/membros/member-form-icons";
+} from "@/components/ui/icons";
 import type { SetorOption } from "@/lib/mapeamento/types";
 
 type SetorContextCardProps = {

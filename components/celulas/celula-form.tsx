@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 
 import { saveSetorCelulaAction } from "@/app/actions/celulas";
-import { SubmitButton } from "@/components/membros/submit-button";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { CELULA_FORM_FIELDS } from "@/lib/mapeamento/constants";
 import { initialSaveCelulaState } from "@/lib/mapeamento/types";
 

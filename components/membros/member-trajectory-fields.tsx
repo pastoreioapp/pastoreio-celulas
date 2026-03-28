@@ -3,7 +3,7 @@ import {
   type PassoTrajetoria,
   TotalPassosTrajetoria,
 } from "@/lib/mapeamento/trajetoria";
-import { TrajetoriaSection } from "@/components/membros/trajetoria-section";
+import { TrajetoriaSection } from "@/components/trajetoria/trajetoria-section";
 import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
 
 type MemberTrajectoryFieldsProps = {

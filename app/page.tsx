@@ -2,7 +2,7 @@ import { connection } from "next/server";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
-import { AccessCodeGate } from "@/components/membros/access-code-gate";
+import { AccessCodeGate } from "@/components/access/access-code-gate";
 import { loadCelulaByAccessCode } from "@/lib/mapeamento/celulas";
 import { loadSetorByAccessCode } from "@/lib/mapeamento/setores";
 import {

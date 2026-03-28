@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { TotalPassosTrajetoria } from "@/lib/mapeamento/trajetoria";
-import { InsightsPanel } from "@/components/membros/insights-panel";
+import { InsightsPanel } from "@/components/insights/insights-panel";
 import { MemberTrajectorySheet } from "@/components/membros/member-trajectory-sheet";
 import { MemberSelfRegisterShare } from "@/components/membros/member-self-register-share";
 import { formatCreatedAt, formatPhone } from "@/lib/mapeamento/formatting";

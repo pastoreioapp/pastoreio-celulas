@@ -11,7 +11,7 @@ Your training data may be outdated for this version. Before using any Next.js AP
 ## Layer Boundaries
 - `app/` is thin: pages load data and render, actions orchestrate validation/persistence. No business logic, no direct Supabase calls.
 - `lib/mapeamento/*` owns domain logic, data access, validation, and types.
-- `components/membros/*` are Client Components. They may only import from client-safe modules: `trajetoria.ts`, `constants.ts`, `types.ts`, `routes.ts`, `formatting.ts`.
+- `components/*` are Client Components organized by domain (`ui/`, `access/`, `celulas/`, `setores/`, `membros/`, `trajetoria/`, `insights/`, `behavior/`). They may only import from client-safe modules: `trajetoria.ts`, `constants.ts`, `types.ts`, `routes.ts`, `formatting.ts`.
 - Never import `server-only` files (`celulas.ts`, `membros.ts`, `setores.ts`, `rotas.ts`, `lib/supabase/server.ts`) from `"use client"` components.
 
 ## Sources of Truth — Do Not Duplicate

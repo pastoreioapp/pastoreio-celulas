@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { CelulaList } from "@/components/membros/celula-list";
-import { InsightsPanel } from "@/components/membros/insights-panel";
+import { CelulaList } from "@/components/celulas/celula-list";
+import { InsightsPanel } from "@/components/insights/insights-panel";
 import { loadCelulasBySetorId } from "@/lib/mapeamento/celulas";
 import { loadMembersBySetorId } from "@/lib/mapeamento/membros";
 import { resolveSetorRouteAccess } from "@/lib/mapeamento/rotas";

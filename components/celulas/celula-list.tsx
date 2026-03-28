@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 
-import { CelulaAvatar } from "@/components/membros/celula-context";
+import { CelulaAvatar } from "@/components/celulas/celula-context";
 import {
   LeaderChipIcon,
   ScheduleChipIcon,
-} from "@/components/membros/member-form-icons";
+} from "@/components/ui/icons";
 import type { CelulaOption } from "@/lib/mapeamento/types";
 import {
   buildLeaderMembersRoute,

@@ -2,7 +2,7 @@
 
 import { useFormStatus } from "react-dom";
 
-import { SaveMemberIcon } from "@/components/membros/member-form-icons";
+import { SaveMemberIcon } from "@/components/ui/icons";
 
 type SubmitButtonProps = {
   disabled?: boolean;

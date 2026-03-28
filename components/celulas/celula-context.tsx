@@ -7,7 +7,7 @@ import { useState } from "react";
 import {
   LeaderChipIcon,
   ScheduleChipIcon,
-} from "@/components/membros/member-form-icons";
+} from "@/components/ui/icons";
 import type { CelulaOption } from "@/lib/mapeamento/types";
 
 type CelulaAvatarProps = {

@@ -4,11 +4,19 @@ export type CelulaOption = {
   id: string;
   nome: string;
   setor: string | null;
+  setorId: string | null;
   lideres: string | null;
   diaSemana: string | null;
   horario: string | null;
   fotoUrl: string | null;
   codigoAcesso: string | null;
+};
+
+export type SetorOption = {
+  id: string;
+  nome: string;
+  descricao: string | null;
+  lideres: string | null;
 };
 
 export type LoadCelulasResult = {

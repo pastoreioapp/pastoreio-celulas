@@ -7,7 +7,7 @@ import type { CelulaOption, LoadCelulasResult } from "@/lib/mapeamento/types";
 import { getSupabaseConfigError, getSupabaseServerClient } from "@/lib/supabase/server";
 
 const CELULAS_SELECT_COLUMNS =
-  "id, nome, setor, lideres, dia_semana, horario, foto_url, codigo_acesso";
+  "id, nome, setor, setor_id, lideres, dia_semana, horario, foto_url, codigo_acesso";
 const DEFAULT_CELULA_PHOTOS_BUCKET = "celulas";
 const LOAD_CELULAS_ERROR_MESSAGE =
   "Nao foi possivel carregar as celulas agora. Verifique a conexao com o Supabase.";
@@ -16,6 +16,7 @@ type CelulaRow = {
   id: string;
   nome: string;
   setor: string | null;
+  setor_id: string | null;
   lideres: string | null;
   dia_semana: string | null;
   horario: string | null;
@@ -67,6 +68,7 @@ function mapCelulaRowToOption(
     id: celula.id,
     nome: celula.nome,
     setor: celula.setor,
+    setorId: celula.setor_id,
     lideres: celula.lideres,
     diaSemana: celula.dia_semana,
     horario: celula.horario,
@@ -176,6 +178,60 @@ export async function loadCelulaOptionById(
 
     return {
       celulas: [celula],
+      loadError: null,
+    };
+  } catch {
+    return {
+      celulas: [],
+      loadError: LOAD_CELULAS_ERROR_MESSAGE,
+    };
+  }
+}
+
+export async function loadCelulasBySetorId(
+  setorId: string
+): Promise<LoadCelulasResult> {
+  const configError = getSupabaseConfigError();
+
+  if (configError) {
+    return {
+      celulas: [],
+      loadError: configError,
+    };
+  }
+
+  try {
+    const supabase = getSupabaseServerClient();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const celulaPhotosBucket =
+      process.env.NEXT_PUBLIC_SUPABASE_CELULAS_BUCKET ?? DEFAULT_CELULA_PHOTOS_BUCKET;
+    const { data, error } = await supabase
+      .schema(MAPEAMENTO_SCHEMA)
+      .from(MAPEAMENTO_TABLES.celulas)
+      .select(CELULAS_SELECT_COLUMNS)
+      .eq("setor_id", setorId)
+      .order("nome", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    const celulas = ((data ?? []) as CelulaRow[]).map((celula) =>
+      mapCelulaRowToOption(celula, (fotoUrl) =>
+        supabaseUrl
+          ? resolveCelulaPhotoUrl(
+              fotoUrl,
+              supabaseUrl,
+              celulaPhotosBucket,
+              (path) =>
+                supabase.storage.from(celulaPhotosBucket).getPublicUrl(path).data.publicUrl
+            )
+          : null
+      )
+    );
+
+    return {
+      celulas,
       loadError: null,
     };
   } catch {

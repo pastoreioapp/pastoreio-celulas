@@ -3,6 +3,7 @@ export const MAPEAMENTO_SCHEMA = "mapeamento";
 export const MAPEAMENTO_TABLES = {
   celulas: "celulas",
   membros: "membros",
+  setores: "setores",
 } as const;
 
 export const MEMBER_FORM_FIELDS = {

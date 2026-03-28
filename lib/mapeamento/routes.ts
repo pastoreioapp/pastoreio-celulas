@@ -13,3 +13,7 @@ export function buildLeaderEditMemberRoute(accessCode: string, memberId: string)
 export function buildMemberSelfRegistrationRoute(accessCode: string) {
   return `/membro/${encodeURIComponent(accessCode)}`;
 }
+
+export function buildSetorCelulasRoute(setorId: string) {
+  return `/setor/${encodeURIComponent(setorId)}`;
+}

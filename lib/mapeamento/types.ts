@@ -108,6 +108,24 @@ export type CreateCelulaInput = {
   codigoAcesso: string | null;
 };
 
+export type CategoryInsight = {
+  name: string;
+  description: string;
+  completedCount: number;
+  totalPossible: number;
+  percentage: number;
+};
+
+export type TrajectoryInsights = {
+  totalMembers: number;
+  totalCompletedSteps: number;
+  totalPossibleSteps: number;
+  overallPercentage: number;
+  membersWithFullTrajectory: number;
+  membersWithDiscipulador: number;
+  categories: CategoryInsight[];
+};
+
 export type MemberFormValues = {
   id?: string;
   nome: string;

@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 
 import { CelulaList } from "@/components/membros/celula-list";
+import { InsightsPanel } from "@/components/membros/insights-panel";
 import { loadCelulasBySetorId } from "@/lib/mapeamento/celulas";
+import { loadMembersBySetorId } from "@/lib/mapeamento/membros";
 import { resolveSetorRouteAccess } from "@/lib/mapeamento/rotas";
 
 type SetorCelulasPageProps = {
@@ -18,7 +20,10 @@ export default async function SetorCelulasPage({
     notFound();
   }
 
-  const { celulas, loadError } = await loadCelulasBySetorId(access.access.setorId);
+  const [{ celulas, loadError }, { members }] = await Promise.all([
+    loadCelulasBySetorId(access.access.setorId),
+    loadMembersBySetorId(access.access.setorId),
+  ]);
 
   if (loadError) {
     return (
@@ -32,10 +37,13 @@ export default async function SetorCelulasPage({
   }
 
   return (
-    <CelulaList
-      celulas={celulas}
-      setorNome={access.setor.nome}
-      setorAccessCode={access.access.code}
-    />
+    <>
+      <InsightsPanel members={members} totalCelulas={celulas.length} />
+      <CelulaList
+        celulas={celulas}
+        setorNome={access.setor.nome}
+        setorAccessCode={access.access.code}
+      />
+    </>
   );
 }

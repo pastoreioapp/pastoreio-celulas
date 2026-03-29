@@ -14,7 +14,7 @@ import {
 } from "@/lib/constants";
 import {
   buildLeaderMembersRoute,
-  buildSetorCelulasRoute,
+  buildUnidadeRoute,
 } from "@/lib/routes";
 
 type HomePageProps = {
@@ -47,7 +47,7 @@ export default async function Home({ searchParams }: HomePageProps) {
       const resolved = await loadUnidadeByAccessCode(rawCode);
 
       if (resolved) {
-        redirect(buildSetorCelulasRoute(resolved.code));
+        redirect(buildUnidadeRoute(resolved.code));
       }
     } else {
       const resolved = await loadCelulaByAccessCode(rawCode);

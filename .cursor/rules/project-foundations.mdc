@@ -33,5 +33,5 @@ When making a change, check whether it touches more than one layer:
 3. Cell form field added/renamed → update `CELULA_FORM_FIELDS`, `types.ts` (`SaveCelulaFieldErrors`, inputs), and validation in `celulas/validation.ts`.
 4. DB column added → migration SQL + column select + type + mapper + validation in `lib/*`.
 5. New leader route → use `routes.ts` builder; resolve access with `resolveLeaderRouteAccess` from `rotas.ts`.
-6. New sector/unidade route → use `routes.ts` builder; resolve access with `resolveUnidadeRouteAccess` from `rotas.ts`.
+6. New unidade route → use `routes.ts` builder; resolve access with `resolveUnidadeRouteAccess` from `rotas.ts`.
 7. Insights changed → update `computeTrajectoryInsights` in `trajetoria.ts`; `InsightsPanel` derives from it.

@@ -8,7 +8,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Product Goal
 - Mobile-first CRUD for mapping members of church cell groups (`celulas`).
-- Flows: unified access code gate on `/` (supports both cell and sector codes), leader area on `/lider/[codigo]` (list, create, edit), sector area on `/setor/[codigo]` (cell listing, create cell, insights), and member self-registration on `/membro/[codigo]`.
+- Flows: unified access code gate on `/` (supports both cell and sector codes), leader area on `/lider/[codigo]` (list, create, edit), unidade area on `/unidade/[codigo]` (cell listing, create cell, insights), and member self-registration on `/membro/[codigo]`.
 - Prioritize simplicity, clear visual hierarchy, large touch targets, and accessible contrast.
 
 ## Stack
@@ -21,14 +21,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ### Routes (`app/`)
 | Route | Purpose |
 |-------|---------|
-| `app/page.tsx` | Unified access code gate (celula/setor toggle) → redirects to `/lider/[codigo]` or `/setor/[codigo]` |
+| `app/page.tsx` | Unified access code gate (celula/setor toggle) → redirects to `/lider/[codigo]` or `/unidade/[codigo]` |
 | `app/(lider)/lider/[codigo]/layout.tsx` | Shared leader header with back button and cell context card |
 | `app/(lider)/lider/[codigo]/page.tsx` | Member list with insights panel |
 | `app/(lider)/lider/[codigo]/novo/page.tsx` | Create member |
 | `app/(lider)/lider/[codigo]/membro/[id]/page.tsx` | Edit member |
-| `app/(setor)/setor/[codigo]/layout.tsx` | Shared sector header with back button and sector context card |
-| `app/(setor)/setor/[codigo]/page.tsx` | Cell list with insights panel and per-cell trajectory ranking |
-| `app/(setor)/setor/[codigo]/nova-celula/page.tsx` | Create cell for sector |
+| `app/(unidade)/unidade/[codigo]/layout.tsx` | Shared unidade header with back button and context card |
+| `app/(unidade)/unidade/[codigo]/page.tsx` | Cell list with insights panel and per-cell trajectory ranking |
+| `app/(unidade)/unidade/[codigo]/nova-celula/page.tsx` | Create cell for unidade |
 | `app/membro/[codigo]/page.tsx` | Self-registration (shared via link) |
 | `app/actions/membros.ts` | Server actions for members (orchestration only) |
 | `app/actions/celulas.ts` | Server actions for cells (orchestration only) |
@@ -93,7 +93,7 @@ Server-only client. All DB access flows through `lib/*`.
 - **Cell form field changes** → update `CELULA_FORM_FIELDS` in `constants.ts`, `types.ts`, and validation in `celulas/validation.ts` together.
 - **Schema changes** → add a migration in `migrations/`, then update types, column selects, validation, and mappers in `lib/*`.
 - **Access code changes** → update `celulas.codigo_acesso` or `unidades.codigo_acesso` via migration or admin tool.
-- **New setor/unidade route** → use `routes.ts` builder; resolve access with `resolveUnidadeRouteAccess` from `rotas.ts`.
+- **New unidade route** → use `routes.ts` builder; resolve access with `resolveUnidadeRouteAccess` from `rotas.ts`.
 - **New lider route** → use `routes.ts` builder; resolve access with `resolveLeaderRouteAccess` from `rotas.ts`.
 - **Insights changes** → update `computeTrajectoryInsights` in `trajetoria.ts`; `InsightsPanel` derives from its output.
 

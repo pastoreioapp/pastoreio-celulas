@@ -10,7 +10,7 @@ import {
 import type { CelulaOption } from "@/lib/types";
 import {
   buildLeaderMembersRoute,
-  buildSetorNewCelulaRoute,
+  buildUnidadeNewCelulaRoute,
 } from "@/lib/routes";
 
 type CelulaListProps = {
@@ -40,7 +40,7 @@ export function CelulaList({ celulas, unidadeNome, unidadeAccessCode }: CelulaLi
         </div>
 
         <Link
-          href={buildSetorNewCelulaRoute(unidadeAccessCode)}
+          href={buildUnidadeNewCelulaRoute(unidadeAccessCode)}
           className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-2xl bg-brand-dark px-6 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-[#2D4E8A]"
         >
           Cadastrar celula

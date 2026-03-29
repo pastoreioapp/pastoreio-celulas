@@ -8,7 +8,7 @@ import {
   createCelula,
   validateCreateCelulaFormData,
 } from "@/lib/celulas";
-import { buildSetorCelulasRoute } from "@/lib/routes";
+import { buildUnidadeRoute } from "@/lib/routes";
 import { CELULA_FORM_FIELDS } from "@/lib/constants";
 import type { SaveCelulaState } from "@/lib/types";
 
@@ -32,8 +32,8 @@ export async function saveSetorCelulaAction(
   const result = await createCelula(validation.data);
 
   if (result.success) {
-    revalidatePath(buildSetorCelulasRoute(unidadeAccessCode));
-    redirect(buildSetorCelulasRoute(unidadeAccessCode));
+    revalidatePath(buildUnidadeRoute(unidadeAccessCode));
+    redirect(buildUnidadeRoute(unidadeAccessCode));
   }
 
   return buildSaveCelulaErrorState(result.message);

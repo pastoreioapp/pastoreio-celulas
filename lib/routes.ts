@@ -15,15 +15,9 @@ export function buildMemberSelfRegistrationRoute(accessCode: string) {
 }
 
 export function buildUnidadeRoute(accessCode: string) {
-  return `/setor/${encodeURIComponent(accessCode)}`;
+  return `/unidade/${encodeURIComponent(accessCode)}`;
 }
 
 export function buildUnidadeNewCelulaRoute(accessCode: string) {
   return `${buildUnidadeRoute(accessCode)}/nova-celula`;
 }
-
-/** @deprecated Use `buildUnidadeRoute` */
-export const buildSetorCelulasRoute = buildUnidadeRoute;
-
-/** @deprecated Use `buildUnidadeNewCelulaRoute` */
-export const buildSetorNewCelulaRoute = buildUnidadeNewCelulaRoute;

@@ -49,7 +49,7 @@ export function CelulaAvatar({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-full border-4 border-[#EDEDF1] bg-[#D8E2FF] ${className}`}
+      className={`relative overflow-hidden rounded-full border-4 border-[#EDEDF1] bg-badge-bg ${className}`}
     >
       {shouldShowImage ? (
         <Image
@@ -63,8 +63,8 @@ export function CelulaAvatar({
       ) : (
         <>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_30%,rgba(255,255,255,0.85),rgba(255,255,255,0)_55%),linear-gradient(135deg,rgba(63,91,147,0.18),rgba(89,116,173,0.45))]" />
-          <div className="absolute inset-0 rounded-full bg-[#3F5B93]/10" />
-          <span className="font-heading absolute inset-0 flex items-center justify-center text-2xl font-bold text-[#3F5B93]">
+          <div className="absolute inset-0 rounded-full bg-brand-dark/10" />
+          <span className="font-heading absolute inset-0 flex items-center justify-center text-2xl font-bold text-brand-dark">
             {initials || "PM"}
           </span>
         </>
@@ -89,7 +89,7 @@ export function CelulaContextCard({
   const contextSecondaryChip = scheduleLabel || "Horario a confirmar";
 
   return (
-    <section className="relative overflow-hidden rounded-[24px] bg-linear-to-br from-[#2D4E8A] via-[#3F5B93] to-[#6B8AC4] shadow-[0_18px_50px_rgba(23,48,94,0.18)]">
+    <section className="relative overflow-hidden rounded-[24px] bg-linear-to-br from-[#2D4E8A] via-brand-dark to-[#6B8AC4] shadow-[0_18px_50px_rgba(23,48,94,0.18)]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.10),transparent_60%)]" />
 
       <div className="relative p-6">
@@ -165,19 +165,19 @@ export function CelulaContextContent({
       />
 
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#3F5B93]">
+        <p className="text-xs font-bold uppercase tracking-widest text-brand-dark">
           {contextEyebrow}
         </p>
-        <h2 className="font-heading mt-1 text-[1.9rem] font-extrabold leading-tight tracking-[-0.04em] text-[#1A1C1F]">
+        <h2 className="font-heading mt-1 text-[1.9rem] font-extrabold leading-tight tracking-[-0.04em] text-text-primary">
           {contextTitle}
         </h2>
 
         <div className="mt-4 flex flex-wrap gap-2.5">
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-[#444750]">
+          <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-text-secondary">
             <LeaderChipIcon className="h-3 w-3 shrink-0" alt="" />
             {contextPrimaryChip}
           </span>
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-[#444750]">
+          <span className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F7] px-3 py-1.5 text-sm text-text-secondary">
             <ScheduleChipIcon className="h-3.5 w-3 shrink-0" alt="" />
             {contextSecondaryChip}
           </span>

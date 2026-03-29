@@ -9,7 +9,7 @@ export function BackButton() {
     <button
       type="button"
       onClick={() => router.back()}
-      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-[#5C6070] transition hover:bg-[#F0F1F5] hover:text-[#1A1C1F]"
+      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-text-muted transition hover:bg-[#F0F1F5] hover:text-text-primary"
       aria-label="Voltar"
     >
       <svg

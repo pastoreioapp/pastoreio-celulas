@@ -21,7 +21,7 @@ export default async function MemberSelfRegistrationPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#F9F9FD] text-[#1A1C1F]">
+    <main className="min-h-screen bg-[#F9F9FD] text-text-primary">
       <header className="sticky top-0 z-30 border-b border-black/5 bg-[#F9F9FD]/80 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-[816px] items-center justify-center px-6 py-4">
           <Image
@@ -37,7 +37,7 @@ export default async function MemberSelfRegistrationPage({
 
       <div className="mx-auto w-full max-w-[816px] px-4 py-8 sm:px-6 sm:py-10">
         <section className="space-y-5">
-          <section className="relative overflow-hidden rounded-[24px] bg-linear-to-br from-[#2D4E8A] via-[#3F5B93] to-[#6B8AC4] shadow-[0_18px_50px_rgba(23,48,94,0.18)]">
+          <section className="relative overflow-hidden rounded-[24px] bg-linear-to-br from-[#2D4E8A] via-brand-dark to-[#6B8AC4] shadow-[0_18px_50px_rgba(23,48,94,0.18)]">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.10),transparent_60%)]" />
             <div className="relative p-6">
               <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white/90 backdrop-blur-sm">

@@ -25,19 +25,19 @@ export function MemberTrajectoryFields({
     <section className="space-y-4">
       <div className="flex items-center justify-between gap-4 px-1">
         <div>
-          <h2 className="font-heading text-2xl font-extrabold tracking-[-0.03em] text-[#1A1C1F] sm:text-[1.9rem]">
+          <h2 className="font-heading text-2xl font-extrabold tracking-[-0.03em] text-text-primary sm:text-[1.9rem]">
             {title}
           </h2>
           {description ? (
-            <p className="mt-2 text-sm leading-6 text-[#444750]">
+            <p className="mt-2 text-sm leading-6 text-text-secondary">
               {description}
             </p>
           ) : null}
-          <p className="mt-2 text-sm leading-6 text-[#444750]">
+          <p className="mt-2 text-sm leading-6 text-text-secondary">
             {selectedPassos.length} de {TotalPassosTrajetoria} passos marcados
           </p>
         </div>
-        <span className="rounded-full bg-[#D8E2FF] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[#001A42]">
+        <span className="rounded-full bg-badge-bg px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[#001A42]">
           Passo a Passo
         </span>
       </div>

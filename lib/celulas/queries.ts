@@ -63,6 +63,19 @@ function resolveCelulaPhotoUrl(
   return getPublicUrl(pathWithoutBucket);
 }
 
+function createPhotoResolver(supabase: ReturnType<typeof getSupabaseServerClient>) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const bucket =
+    process.env.NEXT_PUBLIC_SUPABASE_CELULAS_BUCKET ?? DEFAULT_CELULA_PHOTOS_BUCKET;
+
+  return (fotoUrl: string | null): string | null =>
+    supabaseUrl
+      ? resolveCelulaPhotoUrl(fotoUrl, supabaseUrl, bucket, (path) =>
+          supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl
+        )
+      : null;
+}
+
 function mapCelulaRowToOption(
   celula: CelulaRow,
   resolvePhotoUrl: (fotoUrl: string | null) => string | null
@@ -94,9 +107,7 @@ export async function loadCelulaOptions(): Promise<LoadCelulasResult> {
 
   try {
     const supabase = getSupabaseServerClient();
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const celulaPhotosBucket =
-      process.env.NEXT_PUBLIC_SUPABASE_CELULAS_BUCKET ?? DEFAULT_CELULA_PHOTOS_BUCKET;
+    const resolvePhoto = createPhotoResolver(supabase);
     const { data, error } = await supabase
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.celulas)
@@ -108,17 +119,7 @@ export async function loadCelulaOptions(): Promise<LoadCelulasResult> {
     }
 
     const celulas = ((data ?? []) as CelulaRow[]).map((celula) =>
-      mapCelulaRowToOption(celula, (fotoUrl) =>
-        supabaseUrl
-          ? resolveCelulaPhotoUrl(
-              fotoUrl,
-              supabaseUrl,
-              celulaPhotosBucket,
-              (path) =>
-                supabase.storage.from(celulaPhotosBucket).getPublicUrl(path).data.publicUrl
-            )
-          : null
-      )
+      mapCelulaRowToOption(celula, resolvePhoto)
     );
 
     return {
@@ -147,9 +148,7 @@ export async function loadCelulaOptionById(
 
   try {
     const supabase = getSupabaseServerClient();
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const celulaPhotosBucket =
-      process.env.NEXT_PUBLIC_SUPABASE_CELULAS_BUCKET ?? DEFAULT_CELULA_PHOTOS_BUCKET;
+    const resolvePhoto = createPhotoResolver(supabase);
     const { data, error } = await supabase
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.celulas)
@@ -169,17 +168,7 @@ export async function loadCelulaOptionById(
       };
     }
 
-    const celula = mapCelulaRowToOption(data as CelulaRow, (fotoUrl) =>
-      supabaseUrl
-        ? resolveCelulaPhotoUrl(
-            fotoUrl,
-            supabaseUrl,
-            celulaPhotosBucket,
-            (path) =>
-              supabase.storage.from(celulaPhotosBucket).getPublicUrl(path).data.publicUrl
-          )
-        : null
-    );
+    const celula = mapCelulaRowToOption(data as CelulaRow, resolvePhoto);
 
     return {
       celulas: [celula],
@@ -207,9 +196,7 @@ export async function loadCelulasBySetorId(
 
   try {
     const supabase = getSupabaseServerClient();
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const celulaPhotosBucket =
-      process.env.NEXT_PUBLIC_SUPABASE_CELULAS_BUCKET ?? DEFAULT_CELULA_PHOTOS_BUCKET;
+    const resolvePhoto = createPhotoResolver(supabase);
     const { data, error } = await supabase
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.celulas)
@@ -222,17 +209,7 @@ export async function loadCelulasBySetorId(
     }
 
     const celulas = ((data ?? []) as CelulaRow[]).map((celula) =>
-      mapCelulaRowToOption(celula, (fotoUrl) =>
-        supabaseUrl
-          ? resolveCelulaPhotoUrl(
-              fotoUrl,
-              supabaseUrl,
-              celulaPhotosBucket,
-              (path) =>
-                supabase.storage.from(celulaPhotosBucket).getPublicUrl(path).data.publicUrl
-            )
-          : null
-      )
+      mapCelulaRowToOption(celula, resolvePhoto)
     );
 
     return {
@@ -270,9 +247,7 @@ export const loadCelulaByAccessCode = cache(
 
     try {
       const supabase = getSupabaseServerClient();
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const celulaPhotosBucket =
-        process.env.NEXT_PUBLIC_SUPABASE_CELULAS_BUCKET ?? DEFAULT_CELULA_PHOTOS_BUCKET;
+      const resolvePhoto = createPhotoResolver(supabase);
       const { data, error } = await supabase
         .schema(MAPEAMENTO_SCHEMA)
         .from(MAPEAMENTO_TABLES.celulas)
@@ -285,17 +260,7 @@ export const loadCelulaByAccessCode = cache(
       }
 
       const row = data as CelulaRow;
-      const celula = mapCelulaRowToOption(row, (fotoUrl) =>
-        supabaseUrl
-          ? resolveCelulaPhotoUrl(
-              fotoUrl,
-              supabaseUrl,
-              celulaPhotosBucket,
-              (path) =>
-                supabase.storage.from(celulaPhotosBucket).getPublicUrl(path).data.publicUrl
-            )
-          : null
-      );
+      const celula = mapCelulaRowToOption(row, resolvePhoto);
 
       return {
         code: normalized,

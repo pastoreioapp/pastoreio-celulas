@@ -49,7 +49,7 @@ export function TrajetoriaSection({
         <div className="flex min-w-0 items-center gap-4">
           <SectionIcon className="h-11 w-11 shrink-0" />
           <div className="min-w-0">
-            <p className="font-heading truncate text-base font-bold text-[#1A1C1F]">
+            <p className="font-heading truncate text-base font-bold text-text-primary">
               {categoria}
             </p>
             <p className="mt-1 text-sm text-slate-600">
@@ -75,20 +75,20 @@ export function TrajetoriaSection({
                 onClick={() => onTogglePasso(passo)}
                 className={`flex min-h-14 w-full cursor-pointer items-center gap-4 rounded-xl border px-4 py-4 text-left transition ${
                   checked
-                    ? "border-[#5974AD] bg-[#EEF3FF]"
-                    : "border-[#E2E2E6] bg-white hover:border-[#CAD3E4]"
+                    ? "border-brand bg-[#EEF3FF]"
+                    : "border-surface-input bg-white hover:border-[#CAD3E4]"
                 }`}
               >
                 <span
                   className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 ${
                     checked
-                      ? "border-[#5974AD] bg-[#5974AD] text-white"
-                      : "border-[#3F5B93] bg-white text-transparent"
+                      ? "border-brand bg-brand text-white"
+                      : "border-brand-dark bg-white text-transparent"
                   }`}
                 >
                   <span className="text-xs font-bold leading-none">✓</span>
                 </span>
-                <span className="text-[15px] font-medium leading-6 text-[#1A1C1F]">
+                <span className="text-[15px] font-medium leading-6 text-text-primary">
                   {passo}
                 </span>
               </button>

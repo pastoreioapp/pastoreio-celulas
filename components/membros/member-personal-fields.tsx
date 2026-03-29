@@ -33,17 +33,17 @@ export function MemberPersonalFields({
   return (
     <section className="space-y-5">
       <div className="px-1">
-        <h2 className="font-heading text-2xl font-extrabold tracking-[-0.03em] text-[#1A1C1F] sm:text-[1.9rem]">
+        <h2 className="font-heading text-2xl font-extrabold tracking-[-0.03em] text-text-primary sm:text-[1.9rem]">
           Dados do membro
         </h2>
-        <p className="mt-2 text-sm leading-6 text-[#444750]">
+        <p className="mt-2 text-sm leading-6 text-text-secondary">
           Registre as informações pessoais para facilitar o acompanhamento desta pessoa.
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-3 block text-sm font-bold text-[#444750]">
+          <span className="mb-3 block text-sm font-bold text-text-secondary">
             Estado civil
           </span>
           <input
@@ -53,7 +53,7 @@ export function MemberPersonalFields({
             onChange={(event) => onEstadoCivilChange(event.target.value)}
             disabled={disabled}
             placeholder="Ex.: Solteiro(a)"
-            className="min-h-14 w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 text-base font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="min-h-14 w-full rounded-xl border-2 border-transparent bg-surface-input px-5 text-base font-medium text-text-primary outline-none transition placeholder:text-text-secondary/40 focus:border-brand focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
           />
           {fieldErrors.estadoCivil ? (
             <p className="px-1 pt-2 text-sm font-medium text-rose-700">
@@ -63,7 +63,7 @@ export function MemberPersonalFields({
         </label>
 
         <label className="block">
-          <span className="mb-3 block text-sm font-bold text-[#444750]">
+          <span className="mb-3 block text-sm font-bold text-text-secondary">
             Telefone
           </span>
           <input
@@ -73,7 +73,7 @@ export function MemberPersonalFields({
             onChange={(event) => onTelefoneChange(event.target.value)}
             disabled={disabled}
             placeholder="(00) 00000-0000"
-            className="min-h-14 w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 text-base font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="min-h-14 w-full rounded-xl border-2 border-transparent bg-surface-input px-5 text-base font-medium text-text-primary outline-none transition placeholder:text-text-secondary/40 focus:border-brand focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
           />
           {fieldErrors.telefone ? (
             <p className="px-1 pt-2 text-sm font-medium text-rose-700">
@@ -83,7 +83,7 @@ export function MemberPersonalFields({
         </label>
 
         <label className="block">
-          <span className="mb-3 block text-sm font-bold text-[#444750]">
+          <span className="mb-3 block text-sm font-bold text-text-secondary">
             Data de nascimento
           </span>
           <input
@@ -92,7 +92,7 @@ export function MemberPersonalFields({
             value={dataNascimento}
             onChange={(event) => onDataNascimentoChange(event.target.value)}
             disabled={disabled}
-            className="min-h-14 w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 text-base font-medium text-[#1A1C1F] outline-none transition focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="min-h-14 w-full rounded-xl border-2 border-transparent bg-surface-input px-5 text-base font-medium text-text-primary outline-none transition focus:border-brand focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
           />
           {fieldErrors.dataNascimento ? (
             <p className="px-1 pt-2 text-sm font-medium text-rose-700">
@@ -102,7 +102,7 @@ export function MemberPersonalFields({
         </label>
 
         <label className="block">
-          <span className="mb-3 block text-sm font-bold text-[#444750]">
+          <span className="mb-3 block text-sm font-bold text-text-secondary">
             Discipulador
           </span>
           <input
@@ -112,7 +112,7 @@ export function MemberPersonalFields({
             onChange={(event) => onDiscipuladorNomeChange(event.target.value)}
             disabled={disabled}
             placeholder="Nome de quem discipula"
-            className="min-h-14 w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 text-base font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="min-h-14 w-full rounded-xl border-2 border-transparent bg-surface-input px-5 text-base font-medium text-text-primary outline-none transition placeholder:text-text-secondary/40 focus:border-brand focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
           />
           {fieldErrors.discipuladorNome ? (
             <p className="px-1 pt-2 text-sm font-medium text-rose-700">
@@ -122,7 +122,7 @@ export function MemberPersonalFields({
         </label>
 
         <label className="block sm:col-span-2">
-          <span className="mb-3 block text-sm font-bold text-[#444750]">
+          <span className="mb-3 block text-sm font-bold text-text-secondary">
             Ministérios
           </span>
           <textarea
@@ -132,9 +132,9 @@ export function MemberPersonalFields({
             disabled={disabled}
             placeholder="Ex.: Louvor, Intercessao, Midia"
             rows={3}
-            className="w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-5 py-4 text-base font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-xl border-2 border-transparent bg-surface-input px-5 py-4 text-base font-medium text-text-primary outline-none transition placeholder:text-text-secondary/40 focus:border-brand focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
           />
-          <p className="mt-2 px-1 text-sm leading-6 text-[#5C6070]">
+          <p className="mt-2 px-1 text-sm leading-6 text-text-muted">
             Informe um ou mais ministérios separados por vírgula, ponto e vírgula ou quebra de linha.
           </p>
           {fieldErrors.ministerios ? (

@@ -146,7 +146,7 @@ export function MemberForm({
 
       <section className="space-y-3 mt-10">
         <label className="block">
-          <span className="mb-3 block text-sm font-bold text-[#444750]">
+          <span className="mb-3 block text-sm font-bold text-text-secondary">
             {nameLabel}
           </span>
           <div className="relative">
@@ -157,7 +157,7 @@ export function MemberForm({
               onChange={(event) => setNome(event.target.value)}
               disabled={isUnavailable || pending}
               placeholder={namePlaceholder}
-              className="min-h-[68px] w-full rounded-xl border-2 border-transparent bg-[#E2E2E6] px-6 pr-18 text-[1.25rem] font-medium text-[#1A1C1F] outline-none transition placeholder:text-[#444750]/40 focus:border-[#5974AD] focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
+              className="min-h-[68px] w-full rounded-xl border-2 border-transparent bg-surface-input px-6 pr-18 text-[1.25rem] font-medium text-text-primary outline-none transition placeholder:text-text-secondary/40 focus:border-brand focus:bg-white disabled:cursor-not-allowed disabled:opacity-70"
             />
             <span className="pointer-events-none absolute inset-y-0 right-6 flex items-center">
               <MemberInputIcon className="h-6 w-[22px]" alt="" />
@@ -216,7 +216,7 @@ export function MemberForm({
               <button
                 type="reset"
                 disabled={isUnavailable || pending}
-                className="mb-3 inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-[#D4D9E4] px-4 text-sm font-bold uppercase tracking-[0.08em] text-[#444750] transition hover:bg-[#F4F6FB] disabled:cursor-not-allowed disabled:opacity-70"
+                className="mb-3 inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-[#D4D9E4] px-4 text-sm font-bold uppercase tracking-[0.08em] text-text-secondary transition hover:bg-[#F4F6FB] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {resetLabel}
               </button>

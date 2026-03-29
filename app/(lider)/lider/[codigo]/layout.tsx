@@ -26,7 +26,7 @@ export default async function LeaderAreaLayout({
   }
 
   return (
-    <main className="min-h-screen bg-[#F9F9FD] text-[#1A1C1F]">
+    <main className="min-h-screen bg-[#F9F9FD] text-text-primary">
       <header className="sticky top-0 z-30 border-b border-black/5 bg-[#F9F9FD]/80 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-[816px] items-center px-6 py-4">
           <BackButton />

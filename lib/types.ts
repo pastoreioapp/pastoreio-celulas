@@ -126,6 +126,15 @@ export type TrajectoryInsights = {
   categories: CategoryInsight[];
 };
 
+export type CelulaRanking = {
+  id: string;
+  nome: string;
+  memberCount: number;
+  completedSteps: number;
+  totalSteps: number;
+  percentage: number;
+};
+
 export type MemberFormValues = {
   id?: string;
   nome: string;

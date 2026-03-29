@@ -26,20 +26,20 @@ export function MemberSelfRegisterShare({
   }
 
   return (
-    <section className="rounded-[20px] border border-[#C9D4E9] border-l-[3px] border-l-[#5974AD] bg-[#F0F4FE] p-5 sm:p-6">
+    <section className="rounded-[20px] border border-[#C9D4E9] border-l-[3px] border-l-brand bg-[#F0F4FE] p-5 sm:p-6">
       <div className="flex items-start gap-3">
         <span className="mt-0.5 text-xl leading-none" aria-hidden="true">🔗</span>
         <div className="min-w-0 flex-1">
-          <h2 className="font-heading text-lg font-extrabold tracking-[-0.02em] text-[#17305E]">
+          <h2 className="font-heading text-lg font-extrabold tracking-[-0.02em] text-badge-text">
             Compartilhe o link da sua célula
           </h2>
-          <p className="mt-1 text-sm leading-6 text-[#444750]">
+          <p className="mt-1 text-sm leading-6 text-text-secondary">
             Use este link para que o próprio membro preencha os dados diretamente na
             célula correta, sem poder alterá-la.
           </p>
 
-          <div className="mt-4 rounded-xl border border-[#D8E2FF] bg-white/70 p-3 sm:p-4">
-            <p className="break-all text-sm font-medium text-[#1A1C1F]">
+          <div className="mt-4 rounded-xl border border-badge-bg bg-white/70 p-3 sm:p-4">
+            <p className="break-all text-sm font-medium text-text-primary">
               {href}
             </p>
           </div>
@@ -48,7 +48,7 @@ export function MemberSelfRegisterShare({
             <button
               type="button"
               onClick={() => void handleCopyLink()}
-              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#3F5B93] px-5 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-[#2D4E8A]"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-dark px-5 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-[#2D4E8A]"
             >
               {copied ? "Link copiado" : "Copiar link"}
             </button>
@@ -56,7 +56,7 @@ export function MemberSelfRegisterShare({
               href={href}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#5974AD] px-5 text-sm font-bold uppercase tracking-widest text-[#3F5B93] transition hover:bg-[#E2EAFF]"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-brand px-5 text-sm font-bold uppercase tracking-widest text-brand-dark transition hover:bg-[#E2EAFF]"
             >
               Abrir link
             </a>

@@ -1,3 +1,5 @@
+import type { CelulaRanking } from "@/lib/types";
+
 export enum PassoTrajetoria {
   // PASTOREIO 01
   ASSIDUO_CULTO = "Assíduo no Culto",
@@ -63,10 +65,10 @@ export const CategoriaTrajetoriaDescriptions: Record<
   CategoriaTrajetoria,
   string
 > = {
-  "PASTOREIO 01": "Fundamentos da fé e integração",
-  "PASTOREIO 02": "Crescimento espiritual e maturidade",
-  DISCIPULADO: "Preparação para o envio",
-  "LÍDER DE CÉLULA": "Capacitação ministerial plena",
+  "PASTOREIO 01": "",
+  "PASTOREIO 02": "",
+  "DISCIPULADO": "",
+  "LÍDER DE CÉLULA": "",
 };
 
 export const TodosPassosTrajetoria = Object.values(PassoTrajetoria);
@@ -76,6 +78,43 @@ export const TotalPassosTrajetoria = TodosPassosTrajetoria.length;
 export const CategoriasTrajetoriaEntries = Object.entries(
   CategoriasTrajetoria
 ) as [CategoriaTrajetoria, readonly PassoTrajetoria[]][];
+
+export function computeCelulaRankings(
+  celulas: { id: string; nome: string }[],
+  members: { celulaId: string | null; passosConcluidos: PassoTrajetoria[] }[]
+): CelulaRanking[] {
+  const membersByCelula = new Map<string, typeof members>();
+
+  for (const member of members) {
+    if (!member.celulaId) continue;
+    const list = membersByCelula.get(member.celulaId) ?? [];
+    list.push(member);
+    membersByCelula.set(member.celulaId, list);
+  }
+
+  const rankings = celulas.map((celula) => {
+    const celulaMembers = membersByCelula.get(celula.id) ?? [];
+    const completedSteps = celulaMembers.reduce(
+      (sum, m) => sum + m.passosConcluidos.length,
+      0
+    );
+    const totalSteps = celulaMembers.length * TotalPassosTrajetoria;
+
+    return {
+      id: celula.id,
+      nome: celula.nome,
+      memberCount: celulaMembers.length,
+      completedSteps,
+      totalSteps,
+      percentage:
+        totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0,
+    };
+  });
+
+  rankings.sort((a, b) => b.percentage - a.percentage || b.memberCount - a.memberCount);
+
+  return rankings;
+}
 
 export function computeTrajectoryInsights(
   members: { passosConcluidos: PassoTrajetoria[]; discipuladorNome: string | null }[]

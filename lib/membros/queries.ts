@@ -7,8 +7,11 @@ import { getSupabaseConfigError, getSupabaseServerClient } from "@/lib/supabase/
 
 const PASSOS_VALIDOS = new Set<string>(TodosPassosTrajetoria);
 
+const MEMBERS_SELECT_COLUMNS =
+  "id, nome, celula_id, estado_civil, telefone, data_nascimento, discipulador_nome, ministerios, passos_concluidos, created_at";
+
 const LOAD_MEMBERS_ERROR_MESSAGE =
-  "Nao foi possivel salvar o membro agora. Verifique a conexao com o Supabase e tente novamente.";
+  "Nao foi possivel carregar os membros agora. Verifique a conexao com o Supabase e tente novamente.";
 
 type MemberRow = {
   id: string;
@@ -59,9 +62,7 @@ export async function loadMembersByCelulaId(
     const { data, error } = await supabase
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.membros)
-      .select(
-        "id, nome, celula_id, estado_civil, telefone, data_nascimento, discipulador_nome, ministerios, passos_concluidos, created_at"
-      )
+      .select(MEMBERS_SELECT_COLUMNS)
       .eq("celula_id", celulaId)
       .order("nome", { ascending: true });
 
@@ -99,9 +100,7 @@ export async function loadMemberByIdAndCelulaId(
     const { data, error } = await supabase
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.membros)
-      .select(
-        "id, nome, celula_id, estado_civil, telefone, data_nascimento, discipulador_nome, ministerios, passos_concluidos, created_at"
-      )
+      .select(MEMBERS_SELECT_COLUMNS)
       .eq("id", memberId)
       .eq("celula_id", celulaId)
       .maybeSingle();
@@ -153,9 +152,7 @@ export async function loadMembersBySetorId(
     const { data, error } = await supabase
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.membros)
-      .select(
-        "id, nome, celula_id, estado_civil, telefone, data_nascimento, discipulador_nome, ministerios, passos_concluidos, created_at"
-      )
+      .select(MEMBERS_SELECT_COLUMNS)
       .in("celula_id", celulaIds)
       .order("nome", { ascending: true });
 

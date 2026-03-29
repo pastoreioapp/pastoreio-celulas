@@ -78,7 +78,7 @@ export function CelulaSelector({
   }
 
   return (
-    <section className="rounded-[24px] bg-[#5974AD] p-1 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
+    <section className="rounded-[24px] bg-brand p-1 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
       <div className="relative" ref={selectorRef}>
         {isLockedToSingleCelula && showLockedContextCard ? (
           <CelulaContextCard
@@ -121,7 +121,7 @@ export function CelulaSelector({
                         onClick={() => handleSelectCelula(celula.id)}
                         className={`w-full cursor-pointer rounded-[20px] border p-4 text-left transition ${
                           isSelected
-                            ? "border-[#5974AD] bg-[#EEF3FF]"
+                            ? "border-brand bg-[#EEF3FF]"
                             : "border-[#E7E8EE] bg-[#FBFBFE] hover:border-[#C8D3EA] hover:bg-white"
                         }`}
                       >
@@ -133,17 +133,17 @@ export function CelulaSelector({
                           />
 
                           <div className="min-w-0 flex-1">
-                            <p className="text-[11px] font-bold uppercase tracking-widest text-[#3F5B93]">
+                            <p className="text-[11px] font-bold uppercase tracking-widest text-brand-dark">
                               {celula.setor ? `SETOR ${celula.setor}` : "CELULA"}
                             </p>
-                            <p className="font-heading mt-1 text-lg font-extrabold tracking-[-0.03em] text-[#1A1C1F]">
+                            <p className="font-heading mt-1 text-lg font-extrabold tracking-[-0.03em] text-text-primary">
                               {celula.nome}
                             </p>
                           </div>
 
                           <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#B8C5E0]">
                             {isSelected ? (
-                              <span className="h-2.5 w-2.5 rounded-full bg-[#5974AD]" />
+                              <span className="h-2.5 w-2.5 rounded-full bg-brand" />
                             ) : null}
                           </span>
                         </div>

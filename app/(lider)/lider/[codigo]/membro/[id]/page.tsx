@@ -35,13 +35,13 @@ export default async function LeaderEditMemberPage(
   return (
     <section className="space-y-5">
       <div className="rounded-[28px] bg-white p-5 shadow-[0_18px_50px_rgba(26,28,31,0.08)] sm:p-6">
-        <span className="inline-flex rounded-full bg-[#D8E2FF] px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[#17305E]">
+        <span className="inline-flex rounded-full bg-badge-bg px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-badge-text">
           Edicao de membro
         </span>
-        <h2 className="font-heading mt-3 text-3xl font-extrabold tracking-[-0.04em] text-[#1A1C1F]">
+        <h2 className="font-heading mt-3 text-3xl font-extrabold tracking-[-0.04em] text-text-primary">
           Atualizar {member?.nome ?? "membro"} em {access.celula.nome}
         </h2>
-        <p className="mt-2 text-sm leading-6 text-[#444750]">
+        <p className="mt-2 text-sm leading-6 text-text-secondary">
           Revise os dados cadastrados anteriormente e atualize a trajetória sempre que a caminhada deste membro avançar.
         </p>
       </div>

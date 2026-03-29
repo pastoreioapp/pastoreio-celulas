@@ -12,7 +12,7 @@ type SetorContextCardProps = {
 
 export function SetorContextCard({ setor, accessCode }: SetorContextCardProps) {
   return (
-    <section className="relative overflow-hidden rounded-[24px] bg-linear-to-br from-[#2D4E8A] via-[#3F5B93] to-[#6B8AC4] shadow-[0_18px_50px_rgba(23,48,94,0.18)]">
+    <section className="relative overflow-hidden rounded-[24px] bg-linear-to-br from-[#2D4E8A] via-brand-dark to-[#6B8AC4] shadow-[0_18px_50px_rgba(23,48,94,0.18)]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.10),transparent_60%)]" />
 
       <div className="relative p-6">

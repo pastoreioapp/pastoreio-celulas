@@ -8,7 +8,17 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand: #5974AD;
+  --color-brand-dark: #3F5B93;
+  --color-text-primary: #1A1C1F;
+  --color-text-secondary: #444750;
+  --color-text-muted: #5C6070;
+  --color-surface-input: #E2E2E6;
+  --color-border-default: #E7EAF3;
+  --color-badge-bg: #D8E2FF;
+  --color-badge-text: #17305E;
   --font-sans: var(--font-inter);
+  --font-heading: var(--font-manrope);
 }
 
 html {

@@ -8,10 +8,10 @@ import {
   CategoriasTrajetoriaEntries,
   TotalPassosTrajetoria,
   type PassoTrajetoria,
-} from "@/lib/mapeamento/trajetoria";
-import { formatBirthDate, formatPhone } from "@/lib/mapeamento/formatting";
-import { buildLeaderEditMemberRoute } from "@/lib/mapeamento/routes";
-import type { MemberListItem } from "@/lib/mapeamento/types";
+} from "@/lib/trajetoria";
+import { formatBirthDate, formatPhone } from "@/lib/formatting";
+import { buildLeaderEditMemberRoute } from "@/lib/routes";
+import type { MemberListItem } from "@/lib/types";
 
 type MemberTrajectorySheetProps = {
   accessCode: string;

@@ -16,13 +16,13 @@ All tables live under the `mapeamento` schema. Use explicit `mapeamento.` prefix
 
 ## Cross-Layer Alignment
 Every migration must be accompanied by matching changes in the TypeScript domain layer:
-1. Column added/renamed → update the `*Row` type and `*_SELECT_COLUMNS` in the relevant `lib/mapeamento/*.ts` file.
-2. Column affects member forms → update `MEMBER_FORM_FIELDS` in `constants.ts`, input types in `types.ts`, and validation in `membros.ts`.
-3. Column affects cell forms → update `CELULA_FORM_FIELDS` in `constants.ts`, input types in `types.ts`, and validation in `celulas.ts`.
+1. Column added/renamed → update the `*Row` type and `*_SELECT_COLUMNS` in the relevant `lib/*.ts` file (e.g., `lib/celulas/queries.ts`, `lib/membros/queries.ts`).
+2. Column affects member forms → update `MEMBER_FORM_FIELDS` in `constants.ts`, input types in `types.ts`, and validation in `lib/membros/validation.ts`.
+3. Column affects cell forms → update `CELULA_FORM_FIELDS` in `constants.ts`, input types in `types.ts`, and validation in `lib/celulas/validation.ts`.
 4. Column affects UI → update the mapper function and any component that displays the field.
 
 ## Critical Columns
-- `passos_concluidos` (`TEXT[]` on `membros`) — values must exactly match `PassoTrajetoria` enum strings in `lib/mapeamento/trajetoria.ts`. A migration that changes step names requires a data backfill.
+- `passos_concluidos` (`TEXT[]` on `membros`) — values must exactly match `PassoTrajetoria` enum strings in `lib/trajetoria.ts`. A migration that changes step names requires a data backfill.
 - `codigo_acesso` (`TEXT UNIQUE` on `celulas` and `setores`) — the normalized access code used for routing. Changes must consider existing links and client redirects.
 - `setor_id` (`UUID` FK on `celulas`) — links cells to sectors. The old `celulas.setor` text column is deprecated.
 

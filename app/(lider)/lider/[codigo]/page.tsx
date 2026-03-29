@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { MemberList } from "@/components/membros/member-list";
-import { loadMembersByCelulaId } from "@/lib/mapeamento/membros";
-import { resolveLeaderRouteAccess } from "@/lib/mapeamento/rotas";
+import { loadMembersByCelulaId } from "@/lib/membros";
+import { resolveLeaderRouteAccess } from "@/lib/rotas";
 
 type LiderMembersPageProps = {
   params: Promise<{ codigo: string }>;

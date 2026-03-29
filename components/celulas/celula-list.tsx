@@ -7,11 +7,11 @@ import {
   LeaderChipIcon,
   ScheduleChipIcon,
 } from "@/components/ui/icons";
-import type { CelulaOption } from "@/lib/mapeamento/types";
+import type { CelulaOption } from "@/lib/types";
 import {
   buildLeaderMembersRoute,
   buildSetorNewCelulaRoute,
-} from "@/lib/mapeamento/routes";
+} from "@/lib/routes";
 
 type CelulaListProps = {
   celulas: CelulaOption[];

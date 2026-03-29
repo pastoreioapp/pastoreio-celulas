@@ -2,8 +2,8 @@ import "server-only";
 
 import { cache } from "react";
 
-import { loadCelulaByAccessCode } from "@/lib/mapeamento/celulas";
-import { loadSetorByAccessCode } from "@/lib/mapeamento/setores";
+import { loadCelulaByAccessCode } from "@/lib/celulas";
+import { loadSetorByAccessCode } from "@/lib/setores";
 
 export const resolveLeaderRouteAccess = cache(async (code: string) => {
   const resolved = await loadCelulaByAccessCode(code);

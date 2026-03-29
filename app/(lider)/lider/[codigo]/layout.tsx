@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { BackButton } from "@/components/ui/back-button";
 import { CelulaContextCard } from "@/components/celulas/celula-context";
 import { LeaderPageRefresh } from "@/components/behavior/leader-page-refresh";
-import { resolveLeaderRouteAccess } from "@/lib/mapeamento/rotas";
+import { resolveLeaderRouteAccess } from "@/lib/rotas";
 
 type LeaderAreaLayoutProps = {
   children: React.ReactNode;

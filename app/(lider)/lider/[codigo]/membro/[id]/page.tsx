@@ -5,9 +5,9 @@ import { MemberForm } from "@/components/membros/member-form";
 import {
   loadMemberByIdAndCelulaId,
   mapMemberToFormValues,
-} from "@/lib/mapeamento/membros";
-import { buildLeaderMembersRoute } from "@/lib/mapeamento/routes";
-import { resolveLeaderRouteAccess } from "@/lib/mapeamento/rotas";
+} from "@/lib/membros";
+import { buildLeaderMembersRoute } from "@/lib/routes";
+import { resolveLeaderRouteAccess } from "@/lib/rotas";
 
 type LeaderEditMemberPageProps = {
   params: Promise<{ codigo: string; id: string }>;

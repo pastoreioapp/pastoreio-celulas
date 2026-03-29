@@ -2,9 +2,9 @@ import {
   CategoriasTrajetoriaEntries,
   type PassoTrajetoria,
   TotalPassosTrajetoria,
-} from "@/lib/mapeamento/trajetoria";
+} from "@/lib/trajetoria";
 import { TrajetoriaSection } from "@/components/trajetoria/trajetoria-section";
-import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
+import { MEMBER_FORM_FIELDS } from "@/lib/constants";
 
 type MemberTrajectoryFieldsProps = {
   selectedPassos: PassoTrajetoria[];

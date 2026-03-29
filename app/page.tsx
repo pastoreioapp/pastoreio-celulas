@@ -3,19 +3,19 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 
 import { AccessCodeGate } from "@/components/access/access-code-gate";
-import { loadCelulaByAccessCode } from "@/lib/mapeamento/celulas";
-import { loadSetorByAccessCode } from "@/lib/mapeamento/setores";
+import { loadCelulaByAccessCode } from "@/lib/celulas";
+import { loadSetorByAccessCode } from "@/lib/setores";
 import {
   ACCESS_CODE_SEARCH_PARAM,
   ACCESS_TYPE_SEARCH_PARAM,
   ACCESS_TYPE_CELULA,
   ACCESS_TYPE_SETOR,
   type AccessType,
-} from "@/lib/mapeamento/constants";
+} from "@/lib/constants";
 import {
   buildLeaderMembersRoute,
   buildSetorCelulasRoute,
-} from "@/lib/mapeamento/routes";
+} from "@/lib/routes";
 
 type HomePageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

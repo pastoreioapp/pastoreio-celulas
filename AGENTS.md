@@ -33,7 +33,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | `app/actions/membros.ts` | Server actions for members (orchestration only) |
 | `app/actions/celulas.ts` | Server actions for cells (orchestration only) |
 
-### Domain layer (`lib/mapeamento/`)
+### Domain layer (`lib/`)
 | File | Role |
 |------|------|
 | `trajetoria.ts` | Single source of truth for trajectory steps, categories, totals, and `computeTrajectoryInsights` |
@@ -41,13 +41,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | `types.ts` | Domain types, form state contracts (`CelulaOption`, `SetorOption`, `MemberListItem`, `TrajectoryInsights`, etc.) |
 | `routes.ts` | URL builder helpers (no hardcoded paths elsewhere) |
 | `formatting.ts` | Shared phone/date formatters |
-| `celulas.ts` | Cell loading, access code resolution, validation, persistence, setor-filtered queries |
-| `membros.ts` | Member validation, persistence, queries (by cell and by sector) |
+| `form-helpers.ts` | Shared form data helpers (`readTrimmedString`, `normalizeAccessCode`) |
+| `celulas/` | Cell queries, validation, and persistence (split by concern: `queries.ts`, `validation.ts`, `mutations.ts`) |
+| `membros/` | Member queries, validation, and persistence (split by concern: `queries.ts`, `validation.ts`, `mutations.ts`) |
 | `setores.ts` | Sector loading, access code resolution via DB |
 | `rotas.ts` | Route-level access resolution with `React.cache` (leader and sector) |
 
 ### UI (`components/`)
-Client Components organized by domain. They only import from client-safe modules (`trajetoria`, `constants`, `types`, `routes`, `formatting`).
+Client Components organized by domain. They only import from client-safe `lib/` modules (`trajetoria`, `constants`, `types`, `routes`, `formatting`).
 
 | Folder | Domain | Components |
 |--------|--------|------------|
@@ -61,34 +62,34 @@ Client Components organized by domain. They only import from client-safe modules
 | `components/behavior/` | Infrastructure / lifecycle | `leader-page-refresh` |
 
 ### Supabase (`lib/supabase/server.ts`)
-Server-only client. All DB access flows through `lib/mapeamento/*`.
+Server-only client. All DB access flows through `lib/*`.
 
 ## Data Model
 - Schema: `mapeamento`
 - `setores`: `id`, `nome`, `descricao`, `lideres`, `codigo_acesso`, `created_at`
 - `celulas`: `id`, `nome`, `setor_id` (FK → `setores`), `lideres`, `dia_semana`, `horario`, `foto_url`, `codigo_acesso`, `setor` (deprecated — use `setores.nome` via join)
 - `membros`: `id`, `celula_id`, `nome`, `estado_civil`, `telefone`, `data_nascimento`, `discipulador_nome`, `ministerios`, `passos_concluidos`, `created_at`
-- `passos_concluidos` is `TEXT[]` aligned with `PassoTrajetoria` enum values in `lib/mapeamento/trajetoria.ts`.
+- `passos_concluidos` is `TEXT[]` aligned with `PassoTrajetoria` enum values in `lib/trajetoria.ts`.
 - `codigo_acesso` on `celulas` holds the normalized cell access code (e.g., `CEL1001`).
 - `codigo_acesso` on `setores` holds the normalized sector access code (e.g., `SET1001`).
 - `celulas.setor_id` links cells to sectors. The old `celulas.setor` text column is deprecated; sector name comes from `setores(nome)` join.
 
 ## Key Invariants
-- `app/` stays thin: data access and validation live in `lib/mapeamento/*`.
-- Domain types live in `lib/mapeamento/`, never in `app/` or `components/`.
+- `app/` stays thin: data access and validation live in `lib/*`.
+- Domain types live in `lib/`, never in `app/` or `components/`.
 - Use `MEMBER_FORM_FIELDS` for member form `name` attributes and `CELULA_FORM_FIELDS` for cell form `name` attributes — never hardcode field names.
-- Derive trajectory counts and labels from `lib/mapeamento/trajetoria.ts` — never hardcode `19`, `4`, or step strings.
+- Derive trajectory counts and labels from `lib/trajetoria.ts` — never hardcode `19`, `4`, or step strings.
 - Use `computeTrajectoryInsights` from `trajetoria.ts` for all trajectory analytics — never compute percentages ad-hoc.
-- Use `lib/mapeamento/formatting.ts` — never define local formatters.
-- Use `lib/mapeamento/routes.ts` for URL building — never assemble paths manually.
+- Use `lib/formatting.ts` — never define local formatters.
+- Use `lib/routes.ts` for URL building — never assemble paths manually.
 - Supabase queries use `MAPEAMENTO_SCHEMA` and `MAPEAMENTO_TABLES` from `constants.ts`.
-- Files marked `import "server-only"` (`celulas.ts`, `membros.ts`, `setores.ts`, `rotas.ts`, `lib/supabase/server.ts`) must never be imported from `"use client"` components.
+- Files marked `import "server-only"` (`celulas/`, `membros/`, `setores.ts`, `rotas.ts`, `form-helpers.ts`, `lib/supabase/server.ts`) must never be imported from `"use client"` components.
 
 ## When Updating This App
-- **Trajectory changes** → update `lib/mapeamento/trajetoria.ts` first; UI, validation, and insights derive from it.
-- **Member form field changes** → update `MEMBER_FORM_FIELDS` in `constants.ts`, `types.ts`, and validation in `membros.ts` together.
-- **Cell form field changes** → update `CELULA_FORM_FIELDS` in `constants.ts`, `types.ts`, and validation in `celulas.ts` together.
-- **Schema changes** → add a migration in `migrations/`, then update types, column selects, validation, and mappers in `lib/mapeamento/*`.
+- **Trajectory changes** → update `lib/trajetoria.ts` first; UI, validation, and insights derive from it.
+- **Member form field changes** → update `MEMBER_FORM_FIELDS` in `constants.ts`, `types.ts`, and validation in `membros/validation.ts` together.
+- **Cell form field changes** → update `CELULA_FORM_FIELDS` in `constants.ts`, `types.ts`, and validation in `celulas/validation.ts` together.
+- **Schema changes** → add a migration in `migrations/`, then update types, column selects, validation, and mappers in `lib/*`.
 - **Access code changes** → update `celulas.codigo_acesso` or `setores.codigo_acesso` via migration or admin tool.
 - **New setor route** → use `routes.ts` builder; resolve access with `resolveSetorRouteAccess` from `rotas.ts`.
 - **New lider route** → use `routes.ts` builder; resolve access with `resolveLeaderRouteAccess` from `rotas.ts`.

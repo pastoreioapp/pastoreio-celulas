@@ -1,5 +1,5 @@
-import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
-import type { SaveMemberFieldErrors } from "@/lib/mapeamento/types";
+import { MEMBER_FORM_FIELDS } from "@/lib/constants";
+import type { SaveMemberFieldErrors } from "@/lib/types";
 
 type MemberPersonalFieldsProps = {
   estadoCivil: string;

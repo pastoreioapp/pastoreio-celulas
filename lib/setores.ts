@@ -2,9 +2,9 @@ import "server-only";
 
 import { cache } from "react";
 
-import { normalizeAccessCode } from "@/lib/mapeamento/celulas";
-import { MAPEAMENTO_SCHEMA, MAPEAMENTO_TABLES } from "@/lib/mapeamento/constants";
-import type { SetorOption } from "@/lib/mapeamento/types";
+import { normalizeAccessCode } from "@/lib/form-helpers";
+import { MAPEAMENTO_SCHEMA, MAPEAMENTO_TABLES } from "@/lib/constants";
+import type { SetorOption } from "@/lib/types";
 import { getSupabaseConfigError, getSupabaseServerClient } from "@/lib/supabase/server";
 
 const SETORES_SELECT_COLUMNS = "id, nome, descricao, lideres, codigo_acesso";

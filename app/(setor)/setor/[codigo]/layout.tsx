@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { BackButton } from "@/components/ui/back-button";
 import { SetorContextCard } from "@/components/setores/setor-context";
-import { resolveSetorRouteAccess } from "@/lib/mapeamento/rotas";
+import { resolveSetorRouteAccess } from "@/lib/rotas";
 
 type SetorAreaLayoutProps = {
   children: React.ReactNode;

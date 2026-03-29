@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { saveSelfRegisterMemberAction } from "@/app/actions/membros";
 import { CelulaAvatar } from "@/components/celulas/celula-context";
 import { MemberForm } from "@/components/membros/member-form";
-import { resolveLeaderRouteAccess } from "@/lib/mapeamento/rotas";
+import { resolveLeaderRouteAccess } from "@/lib/rotas";
 
 type MemberSelfRegistrationPageProps = {
   params: Promise<{ codigo: string }>;

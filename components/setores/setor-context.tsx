@@ -3,7 +3,7 @@
 import {
   LeaderChipIcon,
 } from "@/components/ui/icons";
-import type { SetorOption } from "@/lib/mapeamento/types";
+import type { SetorOption } from "@/lib/types";
 
 type SetorContextCardProps = {
   setor: SetorOption;

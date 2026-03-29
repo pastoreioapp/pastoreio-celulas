@@ -8,7 +8,7 @@ import {
   LeaderChipIcon,
   ScheduleChipIcon,
 } from "@/components/ui/icons";
-import type { CelulaOption } from "@/lib/mapeamento/types";
+import type { CelulaOption } from "@/lib/types";
 
 type CelulaAvatarProps = {
   celula: CelulaOption | null;

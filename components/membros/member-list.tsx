@@ -3,17 +3,17 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { TotalPassosTrajetoria } from "@/lib/mapeamento/trajetoria";
+import { TotalPassosTrajetoria } from "@/lib/trajetoria";
 import { InsightsPanel } from "@/components/insights/insights-panel";
 import { MemberTrajectorySheet } from "@/components/membros/member-trajectory-sheet";
 import { MemberSelfRegisterShare } from "@/components/membros/member-self-register-share";
-import { formatCreatedAt, formatPhone } from "@/lib/mapeamento/formatting";
-import type { CelulaOption, MemberListItem } from "@/lib/mapeamento/types";
+import { formatCreatedAt, formatPhone } from "@/lib/formatting";
+import type { CelulaOption, MemberListItem } from "@/lib/types";
 import {
   buildLeaderEditMemberRoute,
   buildLeaderNewMemberRoute,
   buildMemberSelfRegistrationRoute,
-} from "@/lib/mapeamento/routes";
+} from "@/lib/routes";
 
 type MemberListProps = {
   accessCode: string;

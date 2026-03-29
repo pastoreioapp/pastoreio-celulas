@@ -20,20 +20,20 @@ alwaysApply: false
 
 ## Client-Only Imports
 These components are `"use client"`. They may import from:
-- `lib/mapeamento/trajetoria.ts` — trajectory steps, categories, totals, `computeTrajectoryInsights`
-- `lib/mapeamento/constants.ts` — `MEMBER_FORM_FIELDS`, `CELULA_FORM_FIELDS`
-- `lib/mapeamento/types.ts` — `CelulaOption`, `SetorOption`, `MemberListItem`, `MemberFormValues`, `SaveMemberState`, `SaveCelulaState`, `TrajectoryInsights`, etc.
-- `lib/mapeamento/routes.ts` — URL builders
-- `lib/mapeamento/formatting.ts` — `formatPhone`, `formatBirthDate`, `formatCreatedAt`
+- `lib/trajetoria.ts` — trajectory steps, categories, totals, `computeTrajectoryInsights`
+- `lib/constants.ts` — `MEMBER_FORM_FIELDS`, `CELULA_FORM_FIELDS`
+- `lib/types.ts` — `CelulaOption`, `SetorOption`, `MemberListItem`, `MemberFormValues`, `SaveMemberState`, `SaveCelulaState`, `TrajectoryInsights`, etc.
+- `lib/routes.ts` — URL builders
+- `lib/formatting.ts` — `formatPhone`, `formatBirthDate`, `formatCreatedAt`
 
-Never import from `celulas.ts`, `membros.ts`, `setores.ts`, `rotas.ts`, or `lib/supabase/*`.
+Never import from `lib/celulas/`, `lib/membros/`, `lib/setores.ts`, `lib/rotas.ts`, `lib/form-helpers.ts`, or `lib/supabase/*`.
 
 ## Member Form Contract
 - `MemberForm` uses `useActionState` with a server action passed as prop.
 - All form `name` attributes use `MEMBER_FORM_FIELDS` constants.
 - Trajectory selections are React-controlled state. Selected values are submitted via hidden `<input>` elements with `name={MEMBER_FORM_FIELDS.passosConcluidos}` — one per selected step. Server reads them with `formData.getAll(...)`.
 - `codigo_acesso` and `celula_id` are also submitted as hidden inputs.
-- Do not convert this to uncontrolled checkboxes without also updating `getSelectedPassos` in `lib/mapeamento/membros.ts`.
+- Do not convert this to uncontrolled checkboxes without also updating `getSelectedPassos` in `lib/membros/validation.ts`.
 
 ## Cell Form Contract
 - `CelulaForm` uses `useActionState` with `saveSetorCelulaAction`.

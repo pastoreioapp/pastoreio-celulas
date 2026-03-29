@@ -10,28 +10,28 @@ Your training data may be outdated for this version. Before using any Next.js AP
 
 ## Layer Boundaries
 - `app/` is thin: pages load data and render, actions orchestrate validation/persistence. No business logic, no direct Supabase calls.
-- `lib/mapeamento/*` owns domain logic, data access, validation, and types.
+- `lib/*` owns domain logic, data access, validation, and types.
 - `components/*` are Client Components organized by domain (`ui/`, `access/`, `celulas/`, `setores/`, `membros/`, `trajetoria/`, `insights/`, `behavior/`). They may only import from client-safe modules: `trajetoria.ts`, `constants.ts`, `types.ts`, `routes.ts`, `formatting.ts`.
-- Never import `server-only` files (`celulas.ts`, `membros.ts`, `setores.ts`, `rotas.ts`, `lib/supabase/server.ts`) from `"use client"` components.
+- Never import `server-only` files (`celulas/`, `membros/`, `setores.ts`, `rotas.ts`, `form-helpers.ts`, `lib/supabase/server.ts`) from `"use client"` components.
 
 ## Sources of Truth — Do Not Duplicate
 | What | Where |
 |------|-------|
-| Trajectory steps, categories, totals, insights computation | `lib/mapeamento/trajetoria.ts` |
-| Member form field `name` attributes | `MEMBER_FORM_FIELDS` in `lib/mapeamento/constants.ts` |
-| Cell form field `name` attributes | `CELULA_FORM_FIELDS` in `lib/mapeamento/constants.ts` |
-| Schema/table names | `MAPEAMENTO_SCHEMA`, `MAPEAMENTO_TABLES` in `lib/mapeamento/constants.ts` |
-| Access type constants (celula/setor) | `ACCESS_TYPE_CELULA`, `ACCESS_TYPE_SETOR` in `lib/mapeamento/constants.ts` |
-| URL paths | Builder functions in `lib/mapeamento/routes.ts` |
-| Phone/date formatting | `lib/mapeamento/formatting.ts` |
-| Domain types and form state | `lib/mapeamento/types.ts` |
+| Trajectory steps, categories, totals, insights computation | `lib/trajetoria.ts` |
+| Member form field `name` attributes | `MEMBER_FORM_FIELDS` in `lib/constants.ts` |
+| Cell form field `name` attributes | `CELULA_FORM_FIELDS` in `lib/constants.ts` |
+| Schema/table names | `MAPEAMENTO_SCHEMA`, `MAPEAMENTO_TABLES` in `lib/constants.ts` |
+| Access type constants (celula/setor) | `ACCESS_TYPE_CELULA`, `ACCESS_TYPE_SETOR` in `lib/constants.ts` |
+| URL paths | Builder functions in `lib/routes.ts` |
+| Phone/date formatting | `lib/formatting.ts` |
+| Domain types and form state | `lib/types.ts` |
 
 ## Change Checklist
 When making a change, check whether it touches more than one layer:
 1. Trajectory changed → update `trajetoria.ts`, then UI, validation, and insights follow automatically.
-2. Member form field added/renamed → update `MEMBER_FORM_FIELDS`, `types.ts` (`SaveMemberFieldErrors`, inputs), and validation in `membros.ts`.
-3. Cell form field added/renamed → update `CELULA_FORM_FIELDS`, `types.ts` (`SaveCelulaFieldErrors`, inputs), and validation in `celulas.ts`.
-4. DB column added → migration SQL + column select + type + mapper + validation in `lib/mapeamento/*`.
+2. Member form field added/renamed → update `MEMBER_FORM_FIELDS`, `types.ts` (`SaveMemberFieldErrors`, inputs), and validation in `membros/validation.ts`.
+3. Cell form field added/renamed → update `CELULA_FORM_FIELDS`, `types.ts` (`SaveCelulaFieldErrors`, inputs), and validation in `celulas/validation.ts`.
+4. DB column added → migration SQL + column select + type + mapper + validation in `lib/*`.
 5. New leader route → use `routes.ts` builder; resolve access with `resolveLeaderRouteAccess` from `rotas.ts`.
 6. New sector route → use `routes.ts` builder; resolve access with `resolveSetorRouteAccess` from `rotas.ts`.
 7. Insights changed → update `computeTrajectoryInsights` in `trajetoria.ts`; `InsightsPanel` derives from it.

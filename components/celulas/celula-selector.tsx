@@ -7,7 +7,7 @@ import {
   CelulaContextCard,
   CelulaContextContent,
 } from "@/components/celulas/celula-context";
-import type { CelulaOption } from "@/lib/mapeamento/types";
+import type { CelulaOption } from "@/lib/types";
 
 type CelulaSelectorProps = {
   celulas: CelulaOption[];

@@ -5,8 +5,8 @@ import { useMemo } from "react";
 import {
   computeTrajectoryInsights,
   TotalPassosTrajetoria,
-} from "@/lib/mapeamento/trajetoria";
-import type { CelulaOption, MemberListItem } from "@/lib/mapeamento/types";
+} from "@/lib/trajetoria";
+import type { CelulaOption, MemberListItem } from "@/lib/types";
 
 type InsightsPanelProps = {
   members: MemberListItem[];

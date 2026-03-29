@@ -7,10 +7,10 @@ import {
   buildSaveCelulaErrorState,
   createCelula,
   validateCreateCelulaFormData,
-} from "@/lib/mapeamento/celulas";
-import { buildSetorCelulasRoute } from "@/lib/mapeamento/routes";
-import { CELULA_FORM_FIELDS } from "@/lib/mapeamento/constants";
-import type { SaveCelulaState } from "@/lib/mapeamento/types";
+} from "@/lib/celulas";
+import { buildSetorCelulasRoute } from "@/lib/routes";
+import { CELULA_FORM_FIELDS } from "@/lib/constants";
+import type { SaveCelulaState } from "@/lib/types";
 
 function readSetorAccessCode(formData: FormData) {
   return typeof formData.get(CELULA_FORM_FIELDS.setorCodigoAcesso) === "string"

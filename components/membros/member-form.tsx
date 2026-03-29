@@ -3,19 +3,19 @@
 import { useActionState, useMemo, useState } from "react";
 
 import { saveLeaderMemberAction } from "@/app/actions/membros";
-import type { PassoTrajetoria } from "@/lib/mapeamento/trajetoria";
+import type { PassoTrajetoria } from "@/lib/trajetoria";
 import { MemberInputIcon } from "@/components/ui/icons";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { CelulaSelector } from "@/components/celulas/celula-selector";
 import { MemberPersonalFields } from "@/components/membros/member-personal-fields";
 import { MemberTrajectoryFields } from "@/components/membros/member-trajectory-fields";
-import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
+import { MEMBER_FORM_FIELDS } from "@/lib/constants";
 import {
   initialSaveMemberState,
   type CelulaOption,
   type MemberFormValues,
   type SaveMemberState,
-} from "@/lib/mapeamento/types";
+} from "@/lib/types";
 
 type MemberFormProps = {
   celulas: CelulaOption[];

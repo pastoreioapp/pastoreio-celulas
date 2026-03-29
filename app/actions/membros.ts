@@ -10,14 +10,14 @@ import {
   updateMember,
   validateCreateMemberFormData,
   validateUpdateMemberFormData,
-} from "@/lib/mapeamento/membros";
+} from "@/lib/membros";
 import {
   buildLeaderMembersRoute,
   buildLeaderEditMemberRoute,
   buildMemberSelfRegistrationRoute,
-} from "@/lib/mapeamento/routes";
-import { MEMBER_FORM_FIELDS } from "@/lib/mapeamento/constants";
-import type { SaveMemberState } from "@/lib/mapeamento/types";
+} from "@/lib/routes";
+import { MEMBER_FORM_FIELDS } from "@/lib/constants";
+import type { SaveMemberState } from "@/lib/types";
 
 function readAccessCode(formData: FormData) {
   return typeof formData.get(MEMBER_FORM_FIELDS.codigoAcesso) === "string"

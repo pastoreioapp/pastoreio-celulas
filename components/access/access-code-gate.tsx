@@ -8,7 +8,7 @@ import {
   ACCESS_TYPE_CELULA,
   ACCESS_TYPE_SETOR,
   type AccessType,
-} from "@/lib/mapeamento/constants";
+} from "@/lib/constants";
 
 type AccessCodeGateProps = {
   defaultValue: string;

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { CelulaForm } from "@/components/celulas/celula-form";
-import { resolveSetorRouteAccess } from "@/lib/mapeamento/rotas";
+import { resolveSetorRouteAccess } from "@/lib/rotas";
 
 type SetorNewCelulaPageProps = {
   params: Promise<{ codigo: string }>;

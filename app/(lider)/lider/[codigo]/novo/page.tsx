@@ -1,5 +1,5 @@
 import { MemberForm } from "@/components/membros/member-form";
-import { resolveLeaderRouteAccess } from "@/lib/mapeamento/rotas";
+import { resolveLeaderRouteAccess } from "@/lib/rotas";
 
 type LeaderCreateMemberPageProps = {
   params: Promise<{ codigo: string }>;

@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 
 import { CelulaList } from "@/components/celulas/celula-list";
 import { InsightsPanel } from "@/components/insights/insights-panel";
-import { loadCelulasBySetorId } from "@/lib/mapeamento/celulas";
-import { loadMembersBySetorId } from "@/lib/mapeamento/membros";
-import { resolveSetorRouteAccess } from "@/lib/mapeamento/rotas";
+import { loadCelulasBySetorId } from "@/lib/celulas";
+import { loadMembersBySetorId } from "@/lib/membros";
+import { resolveSetorRouteAccess } from "@/lib/rotas";
 
 type SetorCelulasPageProps = {
   params: Promise<{ codigo: string }>;

@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import {
   type CategoriaTrajetoria,
   type PassoTrajetoria,
-} from "@/lib/mapeamento/trajetoria";
+} from "@/lib/trajetoria";
 import {
   AccordionChevronIcon,
   DiscipuladoIcon,

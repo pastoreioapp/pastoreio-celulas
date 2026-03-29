@@ -1,4 +1,4 @@
-import type { PassoTrajetoria } from "@/lib/mapeamento/trajetoria";
+import type { PassoTrajetoria } from "@/lib/trajetoria";
 
 export type CelulaOption = {
   id: string;

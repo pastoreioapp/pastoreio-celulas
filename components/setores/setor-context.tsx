@@ -22,10 +22,11 @@ function getLeaderLabel(tipo: string): string {
   return LEADER_LABEL_BY_TIPO[tipo] ?? "Lideres";
 }
 
+const FEMININE_TIPOS = new Set(["REDE", "SEDE", "AREA"]);
+
 function getPanelLabel(tipo: string): string {
-  const lower = tipo.toLowerCase();
-  const vowelStart = /^[aeiou]/i.test(lower);
-  return `Painel ${vowelStart ? "da" : "do"} ${lower}`;
+  const article = FEMININE_TIPOS.has(tipo) ? "da" : "do";
+  return `Painel ${article} ${tipo.toLowerCase()}`;
 }
 
 export function SetorContextCard({ unidade, accessCode }: SetorContextCardProps) {

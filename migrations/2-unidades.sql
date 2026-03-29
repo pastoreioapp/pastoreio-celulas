@@ -91,6 +91,9 @@ SET unidade_id = u.id
 FROM mapeamento.unidades u
 WHERE c.setor_id = u.id;
 
+ALTER TABLE mapeamento.celulas
+DROP COLUMN setor_id;
+
 
 -- Performance indexes
 

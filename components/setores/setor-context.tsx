@@ -14,6 +14,8 @@ const LEADER_LABEL_BY_TIPO: Record<string, string> = {
   SETOR: "Supervisores",
   REDE: "Pastores",
   SEDE: "Pastores",
+  DISTRITO: "Supervisores",
+  AREA: "Supervisores",
 };
 
 function getLeaderLabel(tipo: string): string {

@@ -2,6 +2,7 @@ export {
   loadMembersByCelulaId,
   loadMemberByIdAndCelulaId,
   loadMembersByUnidadeId,
+  loadMembersByDescendantUnidades,
   mapMemberToFormValues,
 } from "./queries";
 export {

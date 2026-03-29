@@ -240,6 +240,47 @@ export async function loadCelulasByUnidadeId(
   }
 }
 
+export async function loadCelulasByDescendantUnidades(
+  unidadeId: string
+): Promise<LoadCelulasResult> {
+  const { loadDescendantUnidadeIds } = await import("@/lib/unidades");
+
+  const descendantIds = await loadDescendantUnidadeIds(unidadeId);
+
+  if (descendantIds.length === 0) {
+    return { celulas: [], loadError: null };
+  }
+
+  const configError = getSupabaseConfigError();
+
+  if (configError) {
+    return { celulas: [], loadError: configError };
+  }
+
+  try {
+    const supabase = getSupabaseServerClient();
+    const resolvePhoto = createPhotoResolver(supabase);
+    const { data, error } = await supabase
+      .schema(MAPEAMENTO_SCHEMA)
+      .from(MAPEAMENTO_TABLES.celulas)
+      .select(CELULAS_SELECT_COLUMNS)
+      .in("unidade_id", descendantIds)
+      .order("nome", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    const celulas = ((data ?? []) as CelulaRow[]).map((celula) =>
+      mapCelulaRowToOption(celula, resolvePhoto)
+    );
+
+    return { celulas, loadError: null };
+  } catch {
+    return { celulas: [], loadError: LOAD_CELULAS_ERROR_MESSAGE };
+  }
+}
+
 export type ResolvedCelulaAccess = {
   code: string;
   celulaId: string;

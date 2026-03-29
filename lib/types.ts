@@ -20,6 +20,7 @@ export type UnidadeOption = {
   lideres: string | null;
   codigoAcesso: string | null;
   tipo: string;
+  nivel: number;
 };
 
 export type LoadCelulasResult = {

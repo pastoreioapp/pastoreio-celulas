@@ -60,7 +60,7 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   const accessError = hasProvidedCode
     ? accessType === ACCESS_TYPE_SETOR
-      ? "Codigo invalido. Confira o codigo do seu setor e tente novamente."
+      ? "Codigo invalido. Confira o codigo da sua unidade e tente novamente."
       : "Codigo invalido. Confira o codigo da sua celula e tente novamente."
     : null;
 

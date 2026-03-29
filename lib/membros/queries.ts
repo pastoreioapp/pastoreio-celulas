@@ -169,6 +169,62 @@ export async function loadMembersByUnidadeId(
   }
 }
 
+export async function loadMembersByDescendantUnidades(
+  unidadeId: string
+): Promise<{ members: MemberListItem[]; loadError: string | null }> {
+  const { loadDescendantUnidadeIds } = await import("@/lib/unidades");
+
+  const descendantIds = await loadDescendantUnidadeIds(unidadeId);
+
+  if (descendantIds.length === 0) {
+    return { members: [], loadError: null };
+  }
+
+  const configError = getSupabaseConfigError();
+
+  if (configError) {
+    return { members: [], loadError: configError };
+  }
+
+  try {
+    const supabase = getSupabaseServerClient();
+
+    const { data: celulas, error: celulasError } = await supabase
+      .schema(MAPEAMENTO_SCHEMA)
+      .from(MAPEAMENTO_TABLES.celulas)
+      .select("id")
+      .in("unidade_id", descendantIds);
+
+    if (celulasError) {
+      throw celulasError;
+    }
+
+    const celulaIds = (celulas ?? []).map((c: { id: string }) => c.id);
+
+    if (celulaIds.length === 0) {
+      return { members: [], loadError: null };
+    }
+
+    const { data, error } = await supabase
+      .schema(MAPEAMENTO_SCHEMA)
+      .from(MAPEAMENTO_TABLES.membros)
+      .select(MEMBERS_SELECT_COLUMNS)
+      .in("celula_id", celulaIds)
+      .order("nome", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      members: ((data ?? []) as MemberRow[]).map(mapMemberRowToListItem),
+      loadError: null,
+    };
+  } catch {
+    return { members: [], loadError: LOAD_MEMBERS_ERROR_MESSAGE };
+  }
+}
+
 export function mapMemberToFormValues(member: MemberListItem): MemberFormValues {
   return {
     id: member.id,

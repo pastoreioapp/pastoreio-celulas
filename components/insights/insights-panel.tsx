@@ -12,6 +12,7 @@ type InsightsPanelProps = {
   members: MemberListItem[];
   totalCelulas?: number;
   celulas?: CelulaOption[];
+  unidadeTipo?: string;
 };
 
 function StatCard({
@@ -131,10 +132,18 @@ function CelulaRankingList({ rankings }: { rankings: CelulaRanking[] }) {
   );
 }
 
+function getRankingSubtitle(tipo?: string): string {
+  if (!tipo) return "Comparativo de progresso entre as celulas do setor.";
+  const lower = tipo.toLowerCase();
+  const article = /^[aeiou]/i.test(lower) ? "da" : "do";
+  return `Comparativo de progresso entre as celulas ${article} ${lower}.`;
+}
+
 export function InsightsPanel({
   members,
   totalCelulas,
   celulas,
+  unidadeTipo,
 }: InsightsPanelProps) {
   const insights = useMemo(
     () => computeTrajectoryInsights(members),
@@ -208,7 +217,7 @@ export function InsightsPanel({
             Trajetoria por celula
           </h3>
           <p className="mt-1 text-sm leading-6 text-text-secondary">
-            Comparativo de progresso entre as celulas do setor.
+            {getRankingSubtitle(unidadeTipo)}
           </p>
 
           <div className="mt-4">

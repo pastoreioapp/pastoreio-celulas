@@ -26,12 +26,12 @@ const MODE_CONFIG = {
     submitLabel: "Entrar na celula",
   },
   [ACCESS_TYPE_SETOR]: {
-    badge: "Acesso do supervisor",
-    title: "Informe o codigo do seu setor",
+    badge: "Acesso de supervisores e pastores",
+    title: "Informe o codigo da sua unidade",
     description:
-      "Visualize todas as celulas do setor vinculado ao codigo informado.",
-    placeholder: "Digite o codigo do setor",
-    submitLabel: "Entrar no setor",
+      "Visualize todas as celulas da unidade vinculada ao codigo informado.",
+    placeholder: "Digite o codigo da unidade",
+    submitLabel: "Acessar unidade",
   },
 } as const;
 
@@ -75,7 +75,7 @@ export function AccessCodeGate({
                 : "text-text-muted hover:text-text-primary"
             }`}
           >
-            Setor
+            Supervisores e Pastores
           </button>
         </div>
 

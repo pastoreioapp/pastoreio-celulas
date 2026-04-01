@@ -3,6 +3,7 @@ import "server-only";
 import { MAPEAMENTO_SCHEMA, MAPEAMENTO_TABLES } from "@/lib/constants";
 import type {
   CreateMemberInput,
+  DeleteState,
   SaveMemberFieldErrors,
   SaveMemberState,
   UpdateMemberInput,
@@ -121,6 +122,47 @@ export async function updateMember(
       message: SAVE_MEMBER_ERROR_MESSAGE,
     };
   }
+}
+
+const DELETE_MEMBER_ERROR_MESSAGE =
+  "Nao foi possivel excluir o membro agora. Verifique a conexao com o Supabase e tente novamente.";
+
+type DeleteMemberResult =
+  | { success: true }
+  | { success: false; message: string };
+
+export async function deleteMember(
+  memberId: string,
+  celulaId: string
+): Promise<DeleteMemberResult> {
+  const configError = getSupabaseConfigError();
+
+  if (configError) {
+    return { success: false, message: configError };
+  }
+
+  try {
+    const supabase = getSupabaseServerClient();
+    const { data, error } = await supabase
+      .schema(MAPEAMENTO_SCHEMA)
+      .from(MAPEAMENTO_TABLES.membros)
+      .delete()
+      .eq("id", memberId)
+      .eq("celula_id", celulaId)
+      .select("id");
+
+    if (error || (data?.length ?? 0) !== 1) {
+      return { success: false, message: DELETE_MEMBER_ERROR_MESSAGE };
+    }
+
+    return { success: true };
+  } catch {
+    return { success: false, message: DELETE_MEMBER_ERROR_MESSAGE };
+  }
+}
+
+export function buildDeleteErrorState(message: string): DeleteState {
+  return { status: "error", message };
 }
 
 export function buildSaveMemberErrorState(message: string): SaveMemberState {

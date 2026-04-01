@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { updateLeaderMemberAction } from "@/app/actions/membros";
+import { DeleteMemberSection } from "@/components/membros/delete-member-section";
 import { MemberForm } from "@/components/membros/member-form";
 import {
   loadMemberByIdAndCelulaId,
@@ -59,6 +60,15 @@ export default async function LeaderEditMemberPage(
         title="Trajetoria de Crescimento"
         description="Atualize os passos concluidos para manter o acompanhamento desta pessoa em dia."
       />
+
+      {member ? (
+        <DeleteMemberSection
+          memberId={member.id}
+          celulaId={access.celula.id}
+          accessCode={access.access.code}
+          memberNome={member.nome}
+        />
+      ) : null}
     </section>
   );
 }

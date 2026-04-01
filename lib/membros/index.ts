@@ -14,7 +14,9 @@ export {
   UPDATE_MEMBER_SUCCESS_MESSAGE,
   createMember,
   updateMember,
+  deleteMember,
   buildSaveMemberErrorState,
   buildSaveMemberSuccessState,
   buildUpdateMemberSuccessState,
+  buildDeleteErrorState,
 } from "./mutations";

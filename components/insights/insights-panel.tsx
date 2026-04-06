@@ -92,10 +92,15 @@ function CategoryAccordion({
       {isOpen && (
         <div className="border-t border-border-default px-4 py-3.5 space-y-2.5">
           {category.steps.map((step) => (
-            <div key={step.name} className="flex items-center justify-between gap-3">
-              <span className="text-sm text-text-secondary min-w-0 truncate">
-                {step.name}
-              </span>
+            <div key={step.name} className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <span className="text-sm text-text-secondary truncate block">
+                  {step.name}
+                </span>
+                <span className="text-xs text-text-muted">
+                  {step.completedCount} {step.completedCount === 1 ? "membro concluiu" : "membros concluiram"} esta etapa
+                </span>
+              </div>
               <span className="shrink-0 text-sm font-semibold text-text-primary tabular-nums">
                 {step.completedCount}{" "}
                 <span className="text-text-muted font-normal">

@@ -232,7 +232,7 @@ export function MemberForm({
               <div className="mb-3">
                 <DeleteConfirmation
                   title={`Excluir ${initialValues.nome || "membro"}?`}
-                  description="Esta acao nao pode ser desfeita. Todos os dados deste membro, incluindo a trajetoria de crescimento, serao permanentemente removidos."
+                  description="Esta ação não pode ser desfeita."
                   triggerLabel="Excluir membro"
                   triggerClassName="inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-rose-200 px-4 text-sm font-bold uppercase tracking-[0.08em] text-rose-700 transition hover:border-rose-300 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-70"
                   confirmLabel="Sim, excluir membro"

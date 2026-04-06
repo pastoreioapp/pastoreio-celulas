@@ -11,12 +11,16 @@ type DeleteConfirmationProps = {
   confirmingLabel?: string;
   cancelLabel?: string;
   triggerLabel: string;
+  triggerClassName?: string;
   hiddenFields: ReactNode;
   action: (
     prevState: DeleteState,
     formData: FormData
   ) => Promise<DeleteState>;
 };
+
+const DEFAULT_TRIGGER_CLASS =
+  "inline-flex min-h-12 w-full items-center justify-center rounded-2xl border-2 border-rose-200 px-5 text-sm font-bold uppercase tracking-[0.08em] text-rose-700 transition hover:border-rose-300 hover:bg-rose-50";
 
 export function DeleteConfirmation({
   title,
@@ -25,6 +29,7 @@ export function DeleteConfirmation({
   confirmingLabel = "Excluindo...",
   cancelLabel = "Cancelar",
   triggerLabel,
+  triggerClassName = DEFAULT_TRIGGER_CLASS,
   hiddenFields,
   action,
 }: DeleteConfirmationProps) {
@@ -39,7 +44,7 @@ export function DeleteConfirmation({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl border-2 border-rose-200 px-5 text-sm font-bold uppercase tracking-[0.08em] text-rose-700 transition hover:border-rose-300 hover:bg-rose-50"
+        className={triggerClassName}
       >
         {triggerLabel}
       </button>

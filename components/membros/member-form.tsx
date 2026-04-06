@@ -5,6 +5,7 @@ import { useActionState, useMemo, useState } from "react";
 import { saveLeaderMemberAction } from "@/app/actions/membros";
 import type { PassoTrajetoria } from "@/lib/trajetoria";
 import { MemberInputIcon } from "@/components/ui/icons";
+import { DeleteConfirmation } from "@/components/ui/delete-confirmation";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { CelulaSelector } from "@/components/celulas/celula-selector";
 import { MemberPersonalFields } from "@/components/membros/member-personal-fields";
@@ -13,6 +14,7 @@ import { MEMBER_FORM_FIELDS } from "@/lib/constants";
 import {
   initialSaveMemberState,
   type CelulaOption,
+  type DeleteState,
   type MemberFormValues,
   type SaveMemberState,
 } from "@/lib/types";
@@ -29,6 +31,10 @@ type MemberFormProps = {
     prevState: SaveMemberState,
     formData: FormData
   ) => Promise<SaveMemberState>;
+  deleteAction?: (
+    prevState: DeleteState,
+    formData: FormData
+  ) => Promise<DeleteState>;
   submitLabel?: string;
   resetLabel?: string;
   nameLabel?: string;
@@ -46,6 +52,7 @@ export function MemberForm({
   backLabel = "Voltar",
   showLockedContextCard = false,
   formAction: serverAction = saveLeaderMemberAction,
+  deleteAction,
   submitLabel,
   resetLabel,
   nameLabel = "Nome do Membro",
@@ -220,6 +227,26 @@ export function MemberForm({
               >
                 {resetLabel}
               </button>
+            ) : null}
+            {deleteAction && initialValues?.id ? (
+              <div className="mb-3">
+                <DeleteConfirmation
+                  title={`Excluir ${initialValues.nome || "membro"}?`}
+                  description="Esta acao nao pode ser desfeita. Todos os dados deste membro, incluindo a trajetoria de crescimento, serao permanentemente removidos."
+                  triggerLabel="Excluir membro"
+                  triggerClassName="inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-rose-200 px-4 text-sm font-bold uppercase tracking-[0.08em] text-rose-700 transition hover:border-rose-300 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-70"
+                  confirmLabel="Sim, excluir membro"
+                  confirmingLabel="Excluindo membro..."
+                  action={deleteAction}
+                  hiddenFields={
+                    <>
+                      <input type="hidden" name={MEMBER_FORM_FIELDS.id} value={initialValues.id} />
+                      <input type="hidden" name={MEMBER_FORM_FIELDS.celulaId} value={celulaId} />
+                      <input type="hidden" name={MEMBER_FORM_FIELDS.codigoAcesso} value={lockedAccessCode ?? ""} />
+                    </>
+                  }
+                />
+              </div>
             ) : null}
             <SubmitButton disabled={isUnavailable} label={submitLabel} />
           </div>

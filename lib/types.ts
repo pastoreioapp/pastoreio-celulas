@@ -138,6 +138,16 @@ export type CelulaRanking = {
   percentage: number;
 };
 
+export type DeleteState = {
+  status: "idle" | "error";
+  message: string | null;
+};
+
+export const initialDeleteState: DeleteState = {
+  status: "idle",
+  message: null,
+};
+
 export type MemberFormValues = {
   id?: string;
   nome: string;

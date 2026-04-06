@@ -128,6 +128,7 @@ export async function loadCelulaOptions(): Promise<LoadCelulasResult> {
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.celulas)
       .select(CELULAS_SELECT_COLUMNS)
+      .eq("deletado", false)
       .order("nome", { ascending: true });
 
     if (error) {
@@ -170,6 +171,7 @@ export async function loadCelulaOptionById(
       .from(MAPEAMENTO_TABLES.celulas)
       .select(CELULAS_SELECT_COLUMNS)
       .eq("id", celulaId)
+      .eq("deletado", false)
       .maybeSingle();
 
     if (error) {
@@ -218,6 +220,7 @@ export async function loadCelulasByUnidadeId(
       .from(MAPEAMENTO_TABLES.celulas)
       .select(CELULAS_SELECT_COLUMNS)
       .eq("unidade_id", unidadeId)
+      .eq("deletado", false)
       .order("nome", { ascending: true });
 
     if (error) {
@@ -265,6 +268,7 @@ export async function loadCelulasByDescendantUnidades(
       .from(MAPEAMENTO_TABLES.celulas)
       .select(CELULAS_SELECT_COLUMNS)
       .in("unidade_id", descendantIds)
+      .eq("deletado", false)
       .order("nome", { ascending: true });
 
     if (error) {
@@ -310,6 +314,7 @@ export const loadCelulaByAccessCode = cache(
         .from(MAPEAMENTO_TABLES.celulas)
         .select(CELULAS_SELECT_COLUMNS)
         .eq("codigo_acesso", normalized)
+        .eq("deletado", false)
         .maybeSingle();
 
       if (error || !data) {

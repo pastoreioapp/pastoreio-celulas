@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 
-import { updateLeaderMemberAction } from "@/app/actions/membros";
+import {
+  updateLeaderMemberAction,
+  deleteLeaderMemberAction,
+} from "@/app/actions/membros";
 import { MemberForm } from "@/components/membros/member-form";
 import {
   loadMemberByIdAndCelulaId,
@@ -54,6 +57,7 @@ export default async function LeaderEditMemberPage(
         backHref={buildLeaderMembersRoute(access.access.code)}
         backLabel="Voltar para membros"
         formAction={updateLeaderMemberAction}
+        deleteAction={member ? deleteLeaderMemberAction : undefined}
         submitLabel="Atualizar membro"
         resetLabel="Restaurar dados atuais"
         title="Trajetoria de Crescimento"

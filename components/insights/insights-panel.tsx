@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import {
   computeCelulaRankings,
   computeTrajectoryInsights,
 } from "@/lib/trajetoria";
-import type { CelulaOption, CelulaRanking, MemberListItem } from "@/lib/types";
+import type { CategoryInsight, CelulaOption, CelulaRanking, MemberListItem } from "@/lib/types";
 
 type InsightsPanelProps = {
   members: MemberListItem[];
@@ -51,30 +51,77 @@ function StatCard({
   );
 }
 
-function ProgressBar({
-  label,
-  percentage,
-  description,
+function CategoryAccordion({
+  category,
+  totalMembers,
 }: {
-  label: string;
-  percentage: number;
-  description?: string;
+  category: CategoryInsight;
+  totalMembers: number;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
+
   return (
-    <div>
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold text-text-primary">{label}</span>
-        <span className="text-sm font-bold text-brand-dark">{percentage}%</span>
-      </div>
-      {description ? (
-        <p className="mt-0.5 text-xs text-text-muted">{description}</p>
-      ) : null}
-      <div className="mt-2 h-2.5 rounded-full bg-border-default">
-        <div
-          className="h-full rounded-full bg-linear-to-r from-brand-dark to-[#7B97D1] transition-all duration-500"
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
+    <div className="rounded-2xl border border-border-default bg-white overflow-hidden">
+      <button
+        type="button"
+        onClick={toggle}
+        aria-expanded={isOpen}
+        className="flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-3.5 text-left transition hover:bg-[#FAFBFD]"
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="text-sm font-semibold text-text-primary truncate">
+            {category.name}
+          </span>
+          <span className="shrink-0 rounded-full bg-[#F4F6FB] px-2.5 py-0.5 text-xs font-bold text-brand-dark">
+            {category.percentage}%
+          </span>
+        </div>
+        <svg
+          className={`h-4 w-4 shrink-0 text-text-muted transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="border-t border-border-default px-4 py-3.5 space-y-2.5">
+          {category.steps.map((step) => (
+            <div key={step.name} className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <span className="text-sm text-text-secondary truncate block">
+                  {step.name}
+                </span>
+                <span className="text-xs text-text-muted">
+                  {step.completedCount} {step.completedCount === 1 ? "membro concluiu" : "membros concluiram"} esta etapa
+                </span>
+              </div>
+              <span className="shrink-0 text-sm font-semibold text-text-primary tabular-nums">
+                {step.completedCount}{" "}
+                <span className="text-text-muted font-normal">
+                  / {totalMembers}
+                </span>
+              </span>
+            </div>
+          ))}
+          <div className="mt-1 pt-2.5 border-t border-border-default flex items-center justify-between gap-3">
+            <span className="text-sm font-semibold text-brand-dark">
+              Etapa completa
+            </span>
+            <span className="text-sm font-bold text-brand-dark tabular-nums">
+              {category.membersWithAllSteps}{" "}
+              <span className="text-text-muted font-normal">
+                / {totalMembers}
+              </span>
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -195,7 +242,7 @@ export function InsightsPanel({
           Panorama geral
         </h3>
 
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           <StatCard
             value={`${insights.overallPercentage}%`}
             label="Trajetoria geral"
@@ -215,24 +262,25 @@ export function InsightsPanel({
             value={String(insights.membersWithFullTrajectory)}
             label="Trajetoria completa"
           />
-          {totalCelulas === undefined ? (
-            <StatCard
-              value={String(insights.membersWithDiscipulador)}
-              label="Com discipulador"
-            />
-          ) : null}
+          <StatCard
+            value={String(insights.membersServingInMinistry)}
+            label="Servindo em ministerio"
+          />
+          <StatCard
+            value={String(insights.membersWithDiscipulador)}
+            label="Discipulando"
+          />
         </div>
 
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 space-y-3">
           <h4 className="text-xs font-bold uppercase tracking-widest text-text-muted">
             Progresso por etapa
           </h4>
           {insights.categories.map((cat) => (
-            <ProgressBar
+            <CategoryAccordion
               key={cat.name}
-              label={cat.name}
-              percentage={cat.percentage}
-              description={cat.description}
+              category={cat}
+              totalMembers={insights.totalMembers}
             />
           ))}
         </div>

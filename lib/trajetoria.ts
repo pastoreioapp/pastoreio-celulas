@@ -117,7 +117,11 @@ export function computeCelulaRankings(
 }
 
 export function computeTrajectoryInsights(
-  members: { passosConcluidos: PassoTrajetoria[]; discipuladorNome: string | null }[]
+  members: {
+    passosConcluidos: PassoTrajetoria[];
+    discipuladorNome: string | null;
+    ministerios: string[];
+  }[]
 ) {
   const totalMembers = members.length;
 
@@ -129,12 +133,15 @@ export function computeTrajectoryInsights(
       overallPercentage: 0,
       membersWithFullTrajectory: 0,
       membersWithDiscipulador: 0,
-      categories: CategoriasTrajetoriaEntries.map(([name]) => ({
+      membersServingInMinistry: 0,
+      categories: CategoriasTrajetoriaEntries.map(([name, steps]) => ({
         name,
         description: CategoriaTrajetoriaDescriptions[name],
         completedCount: 0,
         totalPossible: 0,
         percentage: 0,
+        membersWithAllSteps: 0,
+        steps: steps.map((step) => ({ name: step, completedCount: 0 })),
       })),
     };
   }
@@ -143,6 +150,7 @@ export function computeTrajectoryInsights(
   let totalCompletedSteps = 0;
   let membersWithFullTrajectory = 0;
   let membersWithDiscipulador = 0;
+  let membersServingInMinistry = 0;
 
   for (const member of members) {
     totalCompletedSteps += member.passosConcluidos.length;
@@ -152,23 +160,43 @@ export function computeTrajectoryInsights(
     if (member.discipuladorNome) {
       membersWithDiscipulador++;
     }
+    if (member.ministerios.length > 0) {
+      membersServingInMinistry++;
+    }
   }
 
   const overallPercentage = Math.round(
     (totalCompletedSteps / totalPossibleSteps) * 100
   );
 
-  const categories = CategoriasTrajetoriaEntries.map(([name, steps]) => {
-    const totalPossible = totalMembers * steps.length;
+  const categories = CategoriasTrajetoriaEntries.map(([name, categorySteps]) => {
+    const totalPossible = totalMembers * categorySteps.length;
     let completedCount = 0;
+    let membersWithAllSteps = 0;
+
+    const stepCounts = new Map<PassoTrajetoria, number>();
+    for (const step of categorySteps) {
+      stepCounts.set(step, 0);
+    }
 
     for (const member of members) {
+      let memberStepsInCategory = 0;
       for (const passo of member.passosConcluidos) {
-        if ((steps as readonly string[]).includes(passo)) {
+        if ((categorySteps as readonly string[]).includes(passo)) {
           completedCount++;
+          memberStepsInCategory++;
+          stepCounts.set(passo as PassoTrajetoria, (stepCounts.get(passo as PassoTrajetoria) ?? 0) + 1);
         }
       }
+      if (memberStepsInCategory === categorySteps.length) {
+        membersWithAllSteps++;
+      }
     }
+
+    const steps = categorySteps.map((step) => ({
+      name: step,
+      completedCount: stepCounts.get(step) ?? 0,
+    }));
 
     return {
       name,
@@ -176,6 +204,8 @@ export function computeTrajectoryInsights(
       completedCount,
       totalPossible,
       percentage: totalPossible > 0 ? Math.round((completedCount / totalPossible) * 100) : 0,
+      membersWithAllSteps,
+      steps,
     };
   });
 
@@ -186,6 +216,7 @@ export function computeTrajectoryInsights(
     overallPercentage,
     membersWithFullTrajectory,
     membersWithDiscipulador,
+    membersServingInMinistry,
     categories,
   };
 }

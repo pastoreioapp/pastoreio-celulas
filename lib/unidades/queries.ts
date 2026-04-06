@@ -63,6 +63,7 @@ export const loadUnidadesFilhas = cache(
         .from(MAPEAMENTO_TABLES.unidades)
         .select(UNIDADES_SELECT_COLUMNS)
         .eq("parent_id", parentId)
+        .eq("deletado", false)
         .order("nome", { ascending: true });
 
       if (error) {
@@ -129,6 +130,7 @@ export const loadUnidadeByAccessCode = cache(
         .from(MAPEAMENTO_TABLES.unidades)
         .select(UNIDADES_SELECT_COLUMNS)
         .eq("codigo_acesso", normalized)
+        .eq("deletado", false)
         .maybeSingle();
 
       if (error || !data) {

@@ -106,6 +106,7 @@ export async function updateMember(
       })
       .eq("id", input.id)
       .eq("celula_id", input.celulaId)
+      .eq("deletado", false)
       .select("id");
 
     if (error || (data?.length ?? 0) !== 1) {
@@ -146,9 +147,10 @@ export async function deleteMember(
     const { data, error } = await supabase
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.membros)
-      .delete()
+      .update({ deletado: true })
       .eq("id", memberId)
       .eq("celula_id", celulaId)
+      .eq("deletado", false)
       .select("id");
 
     if (error || (data?.length ?? 0) !== 1) {

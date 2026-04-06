@@ -25,8 +25,9 @@ export async function deleteUnidade(
     const { data, error } = await supabase
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.unidades)
-      .delete()
+      .update({ deletado: true })
       .eq("id", unidadeId)
+      .eq("deletado", false)
       .select("id");
 
     if (error || (data?.length ?? 0) !== 1) {

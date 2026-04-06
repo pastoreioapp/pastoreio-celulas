@@ -64,6 +64,7 @@ export async function loadMembersByCelulaId(
       .from(MAPEAMENTO_TABLES.membros)
       .select(MEMBERS_SELECT_COLUMNS)
       .eq("celula_id", celulaId)
+      .eq("deletado", false)
       .order("nome", { ascending: true });
 
     if (error) {
@@ -103,6 +104,7 @@ export async function loadMemberByIdAndCelulaId(
       .select(MEMBERS_SELECT_COLUMNS)
       .eq("id", memberId)
       .eq("celula_id", celulaId)
+      .eq("deletado", false)
       .maybeSingle();
 
     if (error) {
@@ -137,7 +139,8 @@ export async function loadMembersByUnidadeId(
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.celulas)
       .select("id")
-      .eq("unidade_id", unidadeId);
+      .eq("unidade_id", unidadeId)
+      .eq("deletado", false);
 
     if (celulasError) {
       throw celulasError;
@@ -154,6 +157,7 @@ export async function loadMembersByUnidadeId(
       .from(MAPEAMENTO_TABLES.membros)
       .select(MEMBERS_SELECT_COLUMNS)
       .in("celula_id", celulaIds)
+      .eq("deletado", false)
       .order("nome", { ascending: true });
 
     if (error) {
@@ -193,7 +197,8 @@ export async function loadMembersByDescendantUnidades(
       .schema(MAPEAMENTO_SCHEMA)
       .from(MAPEAMENTO_TABLES.celulas)
       .select("id")
-      .in("unidade_id", descendantIds);
+      .in("unidade_id", descendantIds)
+      .eq("deletado", false);
 
     if (celulasError) {
       throw celulasError;
@@ -210,6 +215,7 @@ export async function loadMembersByDescendantUnidades(
       .from(MAPEAMENTO_TABLES.membros)
       .select(MEMBERS_SELECT_COLUMNS)
       .in("celula_id", celulaIds)
+      .eq("deletado", false)
       .order("nome", { ascending: true });
 
     if (error) {

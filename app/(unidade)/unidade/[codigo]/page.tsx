@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 
 import { CelulaList } from "@/components/celulas/celula-list";
 import { CelulaRankingSection, InsightsPanel } from "@/components/insights/insights-panel";
-import { DeleteUnidadeSection } from "@/components/unidades/delete-unidade-section";
 import { UnidadeList } from "@/components/unidades/unidade-list";
 import { UnidadeTabPanel } from "@/components/unidades/unidade-tab-panel";
 import { loadCelulasByUnidadeId, loadCelulasByDescendantUnidades } from "@/lib/celulas";
@@ -56,11 +55,6 @@ export default async function SetorCelulasPage({
           primaryContent={<UnidadeList unidades={childUnidades} parentNome={unidade.nome} />}
           rankings={<CelulaRankingSection rankings={rankings} unidadeTipo={unidade.tipo} />}
         />
-        <DeleteUnidadeSection
-          unidadeId={unidadeId}
-          unidadeNome={unidade.nome}
-          unidadeTipo={unidade.tipo}
-        />
       </>
     );
   }
@@ -96,11 +90,6 @@ export default async function SetorCelulasPage({
           />
         }
         rankings={<CelulaRankingSection rankings={rankings} unidadeTipo={unidade.tipo} />}
-      />
-      <DeleteUnidadeSection
-        unidadeId={unidadeId}
-        unidadeNome={unidade.nome}
-        unidadeTipo={unidade.tipo}
       />
     </>
   );

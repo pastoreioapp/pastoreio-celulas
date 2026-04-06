@@ -4,4 +4,3 @@ export {
   loadDescendantUnidadeIds,
 } from "./queries";
 export type { ResolvedUnidadeAccess } from "./queries";
-export { deleteUnidade, buildDeleteUnidadeErrorState } from "./mutations";

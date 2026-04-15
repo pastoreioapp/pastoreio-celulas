@@ -27,7 +27,8 @@ export function formatBirthDate(value: string | null): string {
     return "Nao informada";
   }
 
-  return ptBRDateFormatter.format(new Date(`${value}T00:00:00.000Z`));
+  const [year, month, day] = value.split("-");
+  return `${day}/${month}/${year}`;
 }
 
 export function formatCreatedAt(value: string): string {
